@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+        
+        * {
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body { 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        .signup-box {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2.5rem;
+            border-radius: 15px;
+            width: 380px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transform: translateY(30px);
+            opacity: 0;
+            animation: fadeIn 0.8s forwards ease-out;
+        }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        h2:after {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 3px;
+            background: #23a6d5;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 3px;
+        }
+        
+        .input-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            padding-left: 2.5rem;
+            border: none;
+            border-bottom: 2px solid #ddd;
+            border-radius: 0;
+            background-color: transparent;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            border-color: #23a6d5;
+        }
+        
+        .input-group i {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+        
+        button {
+            background: linear-gradient(45deg, #23a6d5, #23d5ab);
+            color: white;
+            border: none;
+            padding: 1rem;
+            width: 100%;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-top: 1rem;
+            font-weight: 500;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        }
+        
+        button:active {
+            transform: translateY(-1px);
+        }
+        
+        .login-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #666;
+        }
+        
+        .login-link a {
+            color: #23a6d5;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .login-link a:hover {
+            color: #e73c7e;
+        }
+        
+        .flash-message {
+            color: #e73c7e;
+            margin: 1rem 0;
+            text-align: center;
+            opacity: 0;
+            animation: flashIn 0.5s forwards 0.3s;
+        }
+        
+        @keyframes flashIn {
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .bubble {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 8s infinite ease-in-out;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+            }
+            25% {
+                transform: translateY(-20px) translateX(10px);
+            }
+            50% {
+                transform: translateY(-10px) translateX(20px);
+            }
+            75% {
+                transform: translateY(-30px) translateX(-10px);
+            }
+        }
+        
+        .strength-meter {
+            height: 5px;
+            background: #ddd;
+            margin-top: 5px;
+            border-radius: 3px;
+            position: relative;
+            overflow: hidden;
+            display: none;
+        }
+        
+        .strength-meter::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0;
+            transition: width 0.3s ease, background-color 0.3s ease;
+        }
+        
+        .strength-meter.weak::before {
+            background-color: #ff4d4d;
+            width: 33%;
+        }
+        
+        .strength-meter.medium::before {
+            background-color: #ffd700;
+            width: 66%;
+        }
+        
+        .strength-meter.strong::before {
+            background-color: #23d5ab;
+            width: 100%;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Animated bubbles -->
+    <div id="bubbles"></div>
+    
+    <div class="signup-box">
+        <h2>Create Account</h2>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-message">{{ messages[0] }}</div>
+            {% endif %}
+        {% endwith %}
+        <form action="/signup" method="POST">
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" name="email" placeholder="Email" required>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" name="password" id="password" placeholder="Password" required>
+                <div class="strength-meter" id="passwordStrength"></div>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-check-circle"></i>
+                <input type="password" name="confirm_password" id="confirmPassword" placeholder="Confirm Password" required>
+            </div>
+            <button type="submit">Create Account</button>
+        </form>
+        <div class="login-link">
+            Already have an account? <a href="/login">Login</a>
+        </div>
+    </div>
+
+    <script>
+        // Create animated background bubbles
+        function createBubbles() {
+            const bubbles = document.getElementById('bubbles');
+            const colors = ['rgba(238, 119, 82, 0.2)', 'rgba(231, 60, 126, 0.2)', 'rgba(35, 166, 213, 0.2)', 'rgba(35, 213, 171, 0.2)'];
+            
+            for (let i = 0; i < 15; i++) {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+                
+                // Random size between 50px and 200px
+                const size = Math.random() * 150 + 50;
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                
+                // Random position
+                bubble.style.left = `${Math.random() * 100}vw`;
+                bubble.style.top = `${Math.random() * 100}vh`;
+                
+                // Random color
+                bubble.style.background = colors[Math.floor(Math.random() * colors.length)];
+                
+                // Random animation duration and delay
+                bubble.style.animationDuration = `${Math.random() * 10 + 5}s`;
+                bubble.style.animationDelay = `${Math.random() * 5}s`;
+                
+                bubbles.appendChild(bubble);
+            }
+        }
+        
+        // Add input focus animations
+        function setupInputAnimations() {
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('focus', () => {
+                    input.parentElement.querySelector('i').style.color = '#23a6d5';
+                });
+                
+                input.addEventListener('blur', () => {
+                    if (!input.value) {
+                        input.parentElement.querySelector('i').style.color = '#999';
+                    }
+                });
+            });
+        }
+        
+        // Setup password strength meter
+        function setupPasswordStrength() {
+            const passwordInput = document.getElementById('password');
+            const strengthMeter = document.getElementById('passwordStrength');
+            
+            passwordInput.addEventListener('input', () => {
+                const password = passwordInput.value;
+                
+                if (password.length > 0) {
+                    strengthMeter.style.display = 'block';
+                    
+                    // Simple password strength check
+                    if (password.length < 6) {
+                        strengthMeter.className = 'strength-meter weak';
+                    } else if (password.length < 10 || !/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
+                        strengthMeter.className = 'strength-meter medium';
+                    } else {
+                        strengthMeter.className = 'strength-meter strong';
+                    }
+                } else {
+                    strengthMeter.style.display = 'none';
+                }
+            });
+        }
+        
+        // Check password confirmation match
+        function setupPasswordConfirmation() {
+            const password = document.getElementById('password');
+            const confirm = document.getElementById('confirmPassword');
+            
+            function checkMatch() {
+                if (confirm.value && password.value !== confirm.value) {
+                    confirm.style.borderColor = '#ff4d4d';
+                } else if (confirm.value) {
+                    confirm.style.borderColor = '#23d5ab';
+                }
+            }
+            
+            password.addEventListener('input', checkMatch);
+            confirm.addEventListener('input', checkMatch);
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            createBubbles();
+            setupInputAnimations();
+            setupPasswordStrength();
+            setupPasswordConfirmation();
+        });
+    </script>
+</body>
+</html>

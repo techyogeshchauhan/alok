@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Details</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4cc9f0;
+            --text: #0b090a;
+            --light: #f8f9fa;
+            --danger: #ef476f;
+            --success: #06d6a0;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: var(--text);
+            line-height: 1.6;
+            padding-bottom: 3rem;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        .header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1.2rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            margin-bottom: 2rem;
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 0;
+            transition: var(--transition);
+        }
+        .back-btn:hover {
+            color: var(--primary);
+            transform: translateX(-3px);
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            font-size: 0.95rem;
+        }
+        .btn-outline {
+            background-color: transparent;
+            color: var(--text);
+            border: 1px solid #ddd;
+        }
+        .btn-outline:hover {
+            background-color: #f5f5f5;
+        }
+        .image-detail-card {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 2rem;
+        }
+        .image-container {
+            position: relative;
+            background-color: #f5f5f5;
+            height: 500px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        .image-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+        .image-container:hover img {
+            transform: scale(1.02);
+        }
+        .image-details {
+            padding: 2rem;
+        }
+        .image-title {
+            font-size: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--text);
+        }
+        .image-description {
+            color: #555;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+        .image-meta {
+            display: flex;
+            gap: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #eee;
+            color: #777;
+        }
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .error-container {
+            background-color: white;
+            border-radius: 12px;
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+        }
+        .error-icon {
+            font-size: 3rem;
+            color: var(--danger);
+            margin-bottom: 1.5rem;
+        }
+        .error-title {
+            font-size: 1.8rem;
+            color: var(--danger);
+            margin-bottom: 1rem;
+        }
+        .error-message {
+            color: #777;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+        @media (max-width: 768px) {
+            .image-container {
+                height: 350px;
+            }
+            .image-meta {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container header-content">
+            <a href="/" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Back to Gallery
+            </a>
+            <div class="actions">
+                <a href="/" class="btn btn-outline">
+                    <i class="fas fa-home"></i>
+                    Home
+                </a>
+                <a href="/property" class="btn btn-outline">
+                    <i class="fas fa-building"></i>
+                    My Properties
+                </a>
+            </div>
+        </div>
+    </header>
+    <div class="container">
+        {% if image %}
+            <div class="image-detail-card">
+                <div class="image-slider">
+                    <div class="slider">
+                        <div class="slide">
+                            <img src="{{ url_for('static', filename='uploads/' + image.filename) }}" alt="{{ image.name }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="properties-details">
+                    <h1 class="image-title">{{ property.name }}</h1>
+                    <p class="image-description">{{ property.description }}</p>
+                    <div class="contact-info">
+                        <p><strong>Contact Name:</strong> {{ image.contact_name }}</p>
+                        <p><strong>Contact Email:</strong> {{ image.contact_email }}</p>
+                        <p><strong>Contact Phone:</strong> {{ image.contact_phone }}</p>
+                    </div>
+                    <div class="image-meta">
+                        <div class="meta-item">
+                            <i class="far fa-calendar-alt"></i>
+                            <span>{{ image.formatted_date }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="far fa-clock"></i>
+                            <span>{{ image.upload_date.strftime('%H:%M') if image.upload_date else 'Unknown time' }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="error-container">
+                <i class="fas fa-exclamation-circle error-icon"></i>
+                <h2 class="error-title">Image Not Found</h2>
+                <p class="error-message">The image you're looking for could not be located. It may have been removed or the URL is incorrect.</p>
+                <a href="/" class="btn btn-outline">
+                    <i class="fas fa-home"></i>
+                    Return to Gallery
+                </a>
+            </div>
+        {% endif %}
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('.slider').slick({
+                dots: true,
+                infinite: true,
+                speed: 300,
+                slidesToShow: 1,
+                adaptiveHeight: true
+            });
+        });
+    </script>
+</body>
+</html>

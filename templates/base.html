@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us - Aawas.in</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    body {
+      background-color: #f5f7fa;
+      color: #333;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      background: #6c63ff;
+      color: #fff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      border-bottom: 2px solid #42a5f5;
+    }
+    .navbar h1 {
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin: 0;
+    }
+    .navbar ul {
+      list-style: none;
+      display: flex;
+      gap: 15px;
+    }
+    .navbar ul li {
+      display: inline;
+    }
+    .navbar ul li a {
+      text-decoration: none;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 500;
+      padding: 8px 15px;
+      border-radius: 5px;
+      transition: background 0.3s ease;
+    }
+    .navbar ul li a:hover {
+      background: #42a5f5;
+    }
+    .about-header {
+      text-align: center;
+      padding: 50px 20px;
+      background: linear-gradient(135deg, #6c63ff, #42a5f5);
+      color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .about-header h1 {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+    .about-header p {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+    .about-header button {
+      background-color: #fff;
+      color: #6c63ff;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .about-header button:hover {
+      background-color: #6c63ff;
+      color: #fff;
+      transform: scale(1.05);
+    }
+    .about-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 40px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+    .card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      color: #6c63ff;
+    }
+    .card p {
+      font-size: 1rem;
+      color: #555;
+    }
+    .about-footer {
+      text-align: center;
+      margin-top: 50px;
+      padding: 20px;
+      font-size: 0.9rem;
+      color: #777;
+    }
+    .about-footer a {
+      color: #6c63ff;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+    .about-footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <h1>Aawas.in</h1>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="property.html">My Properties</a></li>
+    </ul>
+  </nav>
+  <div class="container">
+    <div class="about-header">
+      <h1>About Aawas.in</h1>
+      <p>Your one-stop solution for buying, selling, and renting properties effortlessly.</p>
+      <button>Explore Listings</button>
+    </div>
+    <div class="about-content">
+      <div class="card">
+        <h3>Who We Are</h3>
+        <p>We are a trusted platform connecting property buyers, sellers, and renters worldwide.</p>
+      </div>
+      <div class="card">
+        <h3>Our Mission</h3>
+        <p>To simplify property transactions with transparency, technology, and expert guidance.</p>
+      </div>
+      <div class="card">
+        <h3>Why Choose Us</h3>
+        <p>We offer verified property listings, seamless navigation, and personalized support.</p>
+      </div>
+      <div class="card">
+        <h3>Our Promise</h3>
+        <p>Your satisfaction and trust are our top priorities in every transaction.</p>
+      </div>
+    </div>
+    <div class="about-footer">
+      <p>© 2025 Aawas.in. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>

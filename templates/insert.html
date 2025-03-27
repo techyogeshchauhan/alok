@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if image %}Edit Image{% else %}Upload New Image{% endif %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4cc9f0;
+            --text: #0b090a;
+            --light: #f8f9fa;
+            --danger: #ef476f;
+            --success: #06d6a0;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: var(--text);
+            line-height: 1.6;
+            padding-bottom: 3rem;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        .header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1.2rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            margin-bottom: 2rem;
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 0;
+            transition: var(--transition);
+        }
+        .back-btn:hover {
+            color: var(--primary);
+            transform: translateX(-3px);
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            font-size: 0.95rem;
+        }
+        .btn-outline {
+            background-color: transparent;
+            color: var(--text);
+            border: 1px solid #ddd;
+        }
+        .btn-outline:hover {
+            background-color: #f5f5f5;
+        }
+        .form-title {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            color: var(--text);
+        }
+        .notification {
+            background-color: var(--success);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0 2rem;
+            animation: fadeIn 0.5s ease-in-out;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .form-card {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 2rem;
+            padding: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+        .file-upload {
+            position: relative;
+            display: block;
+            width: 100%;
+            padding: 2rem;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+            margin-bottom: 1rem;
+        }
+        .file-upload:hover {
+            border-color: var(--primary);
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+        .file-upload input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .file-upload-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        .file-upload-text {
+            color: #555;
+        }
+        .current-file {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: #555;
+        }
+        .current-file i {
+            margin-right: 0.5rem;
+            color: var(--primary);
+        }
+        .submit-btn {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+            transition: var(--transition);
+        }
+        .submit-btn:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .form-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container header-content">
+            <a href="/my-images" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Back to My Uploads
+            </a>
+            <div class="actions">
+                <a href="/property" class="btn btn-outline">
+                    <i class="fas fa-building"></i>
+                    My Properties
+                </a>
+                <a href="/logout" class="btn btn-outline">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </a>
+            </div>
+        </div>
+    </header>
+    <div class="container">
+        <h1 class="form-title">
+            <i class="fas {% if image %}fa-edit{% else %}fa-upload{% endif %} mr-2"></i>
+            {% if image %}Edit Image{% else %}Upload New Image{% endif %}
+        </h1>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="notification">
+                    <i class="fas fa-check-circle"></i>
+                    {{ messages[0] }}
+                </div>
+            {% endif %}
+        {% endwith %}
+        <div class="form-card">
+            <form class="upload-form" method="POST" enctype="multipart/form-data" action="{% if image %}/edit-image/{{ image._id }}{% else %}/insert{% endif %}">
+                <div class="form-group">
+                    <label for="name" class="form-label">Image Name</label>
+                    <input type="text" id="name" name="name" class="form-control" placeholder="Enter image name" value="{% if image %}{{ image.name }}{% endif %}" required>
+                </div>
+                <div class="form-group">
+                    <label for="description" class="form-label">Image Description</label>
+                    <textarea id="description" name="description" class="form-control" placeholder="Enter image description" required>{% if image %}{{ image.description }}{% endif %}</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="contact_name" class="form-label">Contact Name</label>
+                    <input type="text" id="contact_name" name="contact_name" class="form-control" placeholder="Enter contact name" value="{% if image %}{{ image.contact_name }}{% endif %}" required>
+                </div>
+                <div class="form-group">
+                    <label for="contact_email" class="form-label">Contact Email</label>
+                    <input type="email" id="contact_email" name="contact_email" class="form-control" placeholder="Enter contact email" value="{% if image %}{{ image.contact_email }}{% endif %}" required>
+                </div>
+                <div class="form-group">
+                    <label for="contact_phone" class="form-label">Contact Phone</label>
+                    <input type="text" id="contact_phone" name="contact_phone" class="form-control" placeholder="Enter contact phone" value="{% if image %}{{ image.contact_phone }}{% endif %}" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Image File</label>
+                    <label class="file-upload">
+                        <div class="file-upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <div class="file-upload-text">
+                            <strong>Click to select</strong> or drag and drop your image
+                            <p><small>Supported formats: JPG, PNG, GIF</small></p>
+                        </div>
+                        <input type="file" name="image" id="image" accept="image/*" multiple {% if not image %}required{% endif %}>
+                    </label>
+                    <div id="file-list" class="file-list">
+                        {% if image %}
+                            <div class="current-file">
+                                <i class="fas fa-image"></i>
+                                <span>Current file: {{ image.filename }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <button type="submit" class="submit-btn">
+                    <i class="fas {% if image %}fa-save{% else %}fa-upload{% endif %} mr-2"></i>
+                    {% if image %}Update Image{% else %}Upload Image{% endif %}
+                </button>
+            </form>
+        </div>
+    </div>
+    <script>
+        document.getElementById('image').addEventListener('change', function(event) {
+            const fileList = document.getElementById('file-list');
+            fileList.innerHTML = '';
+            if (this.files.length > 0) {
+                const list = document.createElement('ul');
+                list.style.listStyleType = 'none';
+                list.style.padding = '0';
+                list.style.marginTop = '1rem';
+                for (let i = 0; i < this.files.length; i++) {
+                    const listItem = document.createElement('li');
+                    listItem.style.display = 'flex';
+                    listItem.style.alignItems = 'center';
+                    listItem.style.gap = '0.5rem';
+                    listItem.style.marginBottom = '0.5rem';
+                    listItem.style.padding = '0.5rem';
+                    listItem.style.backgroundColor = '#f5f5f5';
+                    listItem.style.borderRadius = '8px';
+                    const fileIcon = document.createElement('i');
+                    fileIcon.className = 'fas fa-file-image';
+                    fileIcon.style.color = 'var(--primary)';
+                    const fileName = document.createTextNode(this.files[i].name);
+                    listItem.appendChild(fileIcon);
+                    listItem.appendChild(fileName);
+                    list.appendChild(listItem);
+                }
+                fileList.appendChild(list);
+            } else {
+                fileList.textContent = 'No files selected';
+            }
+        });
+    </script>
+</body>
+</html>
