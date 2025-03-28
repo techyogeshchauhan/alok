@@ -3,140 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% if image %}Edit Image{% else %}Upload New Image{% endif %}</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>{% if image %}Edit Property{% else %}Upload New Property{% endif %} - Aawas.in</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         :root {
-            --primary: #4361ee;
-            --secondary: #3f37c9;
-            --accent: #4cc9f0;
-            --text: #0b090a;
-            --light: #f8f9fa;
-            --danger: #ef476f;
-            --success: #06d6a0;
-            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            --transition: all 0.3s ease;
+            --primary-color: #6c63ff;
+            --secondary-color: #42a5f5;
+            --accent-color: #ff006e;
+            --light-color: #f5f7fa;
+            --dark-color: #333;
+            --gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
         }
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
         }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
-            color: var(--text);
+            background-color: var(--light-color);
+            color: var(--dark-color);
             line-height: 1.6;
-            padding-bottom: 3rem;
         }
         .container {
-            max-width: 700px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 0 1.5rem;
+            padding: 20px;
         }
-        .header {
-            background-color: white;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 1.2rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            margin-bottom: 2rem;
-        }
-        .header-content {
+        /* Navbar Styling */
+        .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 1rem 2rem;
+            background: var(--gradient);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border-bottom: 3px solid var(--accent-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--text);
-            text-decoration: none;
-            font-weight: 600;
-            padding: 0.5rem 0;
-            transition: var(--transition);
-        }
-        .back-btn:hover {
-            color: var(--primary);
-            transform: translateX(-3px);
-        }
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.6rem 1.2rem;
-            border-radius: 50px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: var(--transition);
-            cursor: pointer;
-            border: none;
-            font-size: 0.95rem;
-        }
-        .btn-outline {
-            background-color: transparent;
-            color: var(--text);
-            border: 1px solid #ddd;
-        }
-        .btn-outline:hover {
-            background-color: #f5f5f5;
-        }
-        .form-title {
-            text-align: center;
+        .navbar .logo {
             font-size: 1.8rem;
-            margin-bottom: 2rem;
-            color: var(--text);
-        }
-        .notification {
-            background-color: var(--success);
+            font-weight: 700;
             color: white;
-            padding: 1rem;
-            border-radius: 8px;
-            margin: 1rem 0 2rem;
-            animation: fadeIn 0.5s ease-in-out;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .navbar .logo i {
+            color: var(--accent-color);
         }
-        .form-card {
-            background-color: white;
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .navbar ul li {
+            display: inline;
+        }
+        .navbar ul li a {
+            text-decoration: none;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 0.6rem 1.2rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+        .navbar ul li a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .navbar ul li a.active {
+            background: var(--accent-color);
+        }
+        .menu-toggle {
+            display: none;
+            font-size: 1.8rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .menu-toggle:hover {
+            color: var(--accent-color);
+            transform: rotate(90deg);
+        }
+        /* Header Styling */
+        .form-header {
+            text-align: center;
+            padding: 50px 20px;
+            background: var(--gradient);
+            color: #fff;
             border-radius: 12px;
-            overflow: hidden;
-            box-shadow: var(--card-shadow);
-            margin-bottom: 2rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        .form-header h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        /* Form Styling */
+        .form-card {
+            max-width: 700px;
+            margin: 40px auto;
+            background: #fff;
             padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
         .form-group {
             margin-bottom: 1.5rem;
         }
-        .form-label {
+        .form-group label {
             display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: #333;
-        }
-        .form-control {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            border: 1px solid #ddd;
-            border-radius: 8px;
             font-size: 1rem;
-            transition: var(--transition);
-            font-family: inherit;
+            font-weight: 500;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
         }
-        .form-control:focus {
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 8px rgba(108, 99, 255, 0.2);
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
         }
-        textarea.form-control {
-            min-height: 150px;
+        .form-group textarea {
+            height: 150px;
             resize: vertical;
         }
         .file-upload {
@@ -144,16 +152,16 @@
             display: block;
             width: 100%;
             padding: 2rem;
-            border: 2px dashed #ddd;
-            border-radius: 8px;
+            border: 2px dashed var(--primary-color);
+            border-radius: 6px;
             text-align: center;
-            transition: var(--transition);
+            transition: all 0.3s ease;
             cursor: pointer;
             margin-bottom: 1rem;
         }
         .file-upload:hover {
-            border-color: var(--primary);
-            background-color: rgba(67, 97, 238, 0.05);
+            background: rgba(108, 99, 255, 0.05);
+            border-color: var(--secondary-color);
         }
         .file-upload input[type="file"] {
             position: absolute;
@@ -166,47 +174,89 @@
         }
         .file-upload-icon {
             font-size: 2rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
         }
         .file-upload-text {
             color: #555;
+            font-size: 1rem;
         }
         .current-file {
             display: flex;
             align-items: center;
             padding: 0.8rem;
-            background-color: #f5f5f5;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
+            background: rgba(108, 99, 255, 0.1);
+            border-radius: 6px;
+            margin-bottom: 1rem;
             font-size: 0.9rem;
-            color: #555;
+            color: var(--dark-color);
         }
         .current-file i {
             margin-right: 0.5rem;
-            color: var(--primary);
+            color: var(--primary-color);
         }
-        .submit-btn {
-            background-color: var(--primary);
-            color: white;
-            padding: 0.8rem 1.5rem;
-            border: none;
-            border-radius: 50px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 1rem;
+        .btn {
+            display: block;
             width: 100%;
-            transition: var(--transition);
+            padding: 0.75rem;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
-        .submit-btn:hover {
-            background-color: var(--secondary);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
+        /* Flash Messages */
+        .flash-message {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        /* Responsive Design */
         @media (max-width: 768px) {
-            .header-content {
+            .navbar {
                 flex-direction: column;
-                gap: 1rem;
+                padding: 1rem;
+            }
+            .navbar ul {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                background: var(--gradient);
+                position: absolute;
+                top: 100%;
+                left: 0;
+                padding: 1rem 0;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            }
+            .navbar ul.active {
+                display: flex;
+            }
+            .navbar ul li {
+                margin: 0.5rem 0;
+            }
+            .menu-toggle {
+                display: block;
+            }
+            .form-header h1 {
+                font-size: 2rem;
             }
             .form-card {
                 padding: 1.5rem;
@@ -215,68 +265,72 @@
     </style>
 </head>
 <body>
-    <header class="header">
-        <div class="container header-content">
-            <a href="/my-images" class="back-btn">
-                <i class="fas fa-arrow-left"></i>
-                Back to My Uploads
-            </a>
-            <div class="actions">
-                <a href="/property" class="btn btn-outline">
-                    <i class="fas fa-building"></i>
-                    My Properties
-                </a>
-                <a href="/logout" class="btn btn-outline">
-                    <i class="fas fa-sign-out-alt"></i>
-                    Logout
-                </a>
-            </div>
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-home"></i> Aawas.in
         </div>
-    </header>
+        <ul>
+            <li><a href="{{ url_for('index') }}" class="{{ 'active' if request.endpoint == 'index' else '' }}">Home</a></li>
+            <li><a href="{{ url_for('about') }}" class="{{ 'active' if request.endpoint == 'about' else '' }}">About</a></li>
+            <li><a href="{{ url_for('contact') }}" class="{{ 'active' if request.endpoint == 'contact' else '' }}">Contact</a></li>
+            <li><a href="{{ url_for('my_properties') }}" class="{{ 'active' if request.endpoint == 'my_properties' else '' }}">My Properties</a></li>
+            {% if current_user %}
+                <li><a href="{{ url_for('my_images') }}" class="{{ 'active' if request.endpoint == 'my_images' else '' }}">My Images</a></li>
+                <li><a href="{{ url_for('insert') }}" class="{{ 'active' if request.endpoint == 'insert' else '' }}">Upload</a></li>
+                <li><a href="{{ url_for('logout') }}">Logout ({{ current_user.email }})</a></li>
+            {% else %}
+                <li><a href="{{ url_for('login') }}" class="{{ 'active' if request.endpoint == 'login' else '' }}">Login</a></li>
+                <li><a href="{{ url_for('signup') }}" class="{{ 'active' if request.endpoint == 'signup' else '' }}">Signup</a></li>
+            {% endif %}
+        </ul>
+        <div class="menu-toggle"><i class="fas fa-bars"></i></div>
+    </nav>
     <div class="container">
-        <h1 class="form-title">
-            <i class="fas {% if image %}fa-edit{% else %}fa-upload{% endif %} mr-2"></i>
-            {% if image %}Edit Image{% else %}Upload New Image{% endif %}
-        </h1>
-        {% with messages = get_flashed_messages() %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                <div class="notification">
-                    <i class="fas fa-check-circle"></i>
-                    {{ messages[0] }}
-                </div>
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
             {% endif %}
         {% endwith %}
+        <div class="form-header">
+            <h1>{% if image %}Edit Property{% else %}Upload New Property{% endif %}</h1>
+        </div>
         <div class="form-card">
-            <form class="upload-form" method="POST" enctype="multipart/form-data" action="{% if image %}/edit-image/{{ image._id }}{% else %}/insert{% endif %}">
+            <form method="POST" enctype="multipart/form-data" action="{% if image %}{{ url_for('edit_image', image_id=image._id) }}{% else %}{{ url_for('insert') }}{% endif %}">
                 <div class="form-group">
-                    <label for="name" class="form-label">Image Name</label>
-                    <input type="text" id="name" name="name" class="form-control" placeholder="Enter image name" value="{% if image %}{{ image.name }}{% endif %}" required>
+                    <label for="name">Property Name</label>
+                    <input type="text" id="name" name="name" value="{% if image %}{{ image.name }}{% endif %}" placeholder="Enter property name" required>
                 </div>
                 <div class="form-group">
-                    <label for="description" class="form-label">Image Description</label>
-                    <textarea id="description" name="description" class="form-control" placeholder="Enter image description" required>{% if image %}{{ image.description }}{% endif %}</textarea>
+                    <label for="description">Property Description</label>
+                    <textarea id="description" name="description" placeholder="Enter property description" required>{% if image %}{{ image.description }}{% endif %}</textarea>
                 </div>
                 <div class="form-group">
-                    <label for="contact_name" class="form-label">Contact Name</label>
-                    <input type="text" id="contact_name" name="contact_name" class="form-control" placeholder="Enter contact name" value="{% if image %}{{ image.contact_name }}{% endif %}" required>
+                    <label for="location">Property Location</label>
+                    <input type="text" id="location" name="location" value="{% if image %}{{ image.location }}{% endif %}" placeholder="Enter property location (e.g., Delhi)" required>
                 </div>
                 <div class="form-group">
-                    <label for="contact_email" class="form-label">Contact Email</label>
-                    <input type="email" id="contact_email" name="contact_email" class="form-control" placeholder="Enter contact email" value="{% if image %}{{ image.contact_email }}{% endif %}" required>
+                    <label for="contact_name">Contact Name</label>
+                    <input type="text" id="contact_name" name="contact_name" value="{% if image %}{{ image.contact_name }}{% endif %}" placeholder="Enter contact name" required>
                 </div>
                 <div class="form-group">
-                    <label for="contact_phone" class="form-label">Contact Phone</label>
-                    <input type="text" id="contact_phone" name="contact_phone" class="form-control" placeholder="Enter contact phone" value="{% if image %}{{ image.contact_phone }}{% endif %}" required>
+                    <label for="contact_email">Contact Email</label>
+                    <input type="email" id="contact_email" name="contact_email" value="{% if image %}{{ image.contact_email }}{% endif %}" placeholder="Enter contact email" required>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Image File</label>
+                    <label for="contact_phone">Contact Phone</label>
+                    <input type="text" id="contact_phone" name="contact_phone" value="{% if image %}{{ image.contact_phone }}{% endif %}" placeholder="Enter contact phone" required>
+                </div>
+                <div class="form-group">
+                    <label>Property Image</label>
                     <label class="file-upload">
                         <div class="file-upload-icon">
                             <i class="fas fa-cloud-upload-alt"></i>
                         </div>
                         <div class="file-upload-text">
-                            <strong>Click to select</strong> or drag and drop your image
-                            <p><small>Supported formats: JPG, PNG, GIF</small></p>
+                            <strong>Click to select</strong> or drag and drop your image<br>
+                            <small>Supported formats: JPG, PNG, GIF</small>
                         </div>
                         <input type="file" name="image" id="image" accept="image/*" multiple {% if not image %}required{% endif %}>
                     </label>
@@ -289,43 +343,47 @@
                         {% endif %}
                     </div>
                 </div>
-                <button type="submit" class="submit-btn">
-                    <i class="fas {% if image %}fa-save{% else %}fa-upload{% endif %} mr-2"></i>
-                    {% if image %}Update Image{% else %}Upload Image{% endif %}
+                <button type="submit" class="btn">
+                    <i class="fas {% if image %}fa-save{% else %}fa-upload{% endif %}"></i>
+                    {% if image %}Update Property{% else %}Upload Property{% endif %}
                 </button>
             </form>
         </div>
     </div>
     <script>
-        document.getElementById('image').addEventListener('change', function(event) {
+        document.addEventListener('DOMContentLoaded', function () {
+            const menuToggle = document.querySelector('.menu-toggle');
+            const navLinks = document.querySelector('.navbar ul');
+            menuToggle.addEventListener('click', function () {
+                navLinks.classList.toggle('active');
+            });
+
+            const fileInput = document.getElementById('image');
             const fileList = document.getElementById('file-list');
-            fileList.innerHTML = '';
-            if (this.files.length > 0) {
-                const list = document.createElement('ul');
-                list.style.listStyleType = 'none';
-                list.style.padding = '0';
-                list.style.marginTop = '1rem';
-                for (let i = 0; i < this.files.length; i++) {
-                    const listItem = document.createElement('li');
-                    listItem.style.display = 'flex';
-                    listItem.style.alignItems = 'center';
-                    listItem.style.gap = '0.5rem';
-                    listItem.style.marginBottom = '0.5rem';
-                    listItem.style.padding = '0.5rem';
-                    listItem.style.backgroundColor = '#f5f5f5';
-                    listItem.style.borderRadius = '8px';
-                    const fileIcon = document.createElement('i');
-                    fileIcon.className = 'fas fa-file-image';
-                    fileIcon.style.color = 'var(--primary)';
-                    const fileName = document.createTextNode(this.files[i].name);
-                    listItem.appendChild(fileIcon);
-                    listItem.appendChild(fileName);
-                    list.appendChild(listItem);
+            fileInput.addEventListener('change', function(event) {
+                fileList.innerHTML = '';
+                if (this.files.length > 0) {
+                    const ul = document.createElement('ul');
+                    ul.style.listStyleType = 'none';
+                    ul.style.padding = '0';
+                    ul.style.marginTop = '1rem';
+                    for (let i = 0; i < this.files.length; i++) {
+                        const li = document.createElement('li');
+                        li.style.display = 'flex';
+                        li.style.alignItems = 'center';
+                        li.style.gap = '0.5rem';
+                        li.style.padding = '0.5rem';
+                        li.style.background = 'rgba(108, 99, 255, 0.1)';
+                        li.style.borderRadius = '6px';
+                        li.style.marginBottom = '0.5rem';
+                        li.innerHTML = `<i class="fas fa-file-image" style="color: var(--primary-color);"></i> ${this.files[i].name}`;
+                        ul.appendChild(li);
+                    }
+                    fileList.appendChild(ul);
+                } else {
+                    fileList.textContent = 'No files selected';
                 }
-                fileList.appendChild(list);
-            } else {
-                fileList.textContent = 'No files selected';
-            }
+            });
         });
     </script>
 </body>

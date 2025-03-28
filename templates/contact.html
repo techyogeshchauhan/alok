@@ -3,55 +3,308 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Us</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Aawas.in - Contact Us</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #6c63ff;
+            --secondary-color: #42a5f5;
+            --accent-color: #ff006e;
+            --light-color: #f5f7fa;
+            --dark-color: #333;
+            --gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        /* Navbar Styling */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: var(--gradient);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border-bottom: 3px solid var(--accent-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .navbar .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .navbar .logo i {
+            color: var(--accent-color);
+        }
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .navbar ul li {
+            display: inline;
+        }
+        .navbar ul li a {
+            text-decoration: none;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 0.6rem 1.2rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+        .navbar ul li a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .navbar ul li a.active {
+            background: var(--accent-color);
+        }
+        .menu-toggle {
+            display: none;
+            font-size: 1.8rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .menu-toggle:hover {
+            color: var(--accent-color);
+            transform: rotate(90deg);
+        }
+        /* Contact Header Styling */
+        .contact-header {
+            text-align: center;
+            padding: 50px 20px;
+            background: var(--gradient);
+            color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        .contact-header h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        .contact-header p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        /* Form Styling */
+        .contact-form {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 8px rgba(108, 99, 255, 0.2);
+            outline: none;
+        }
+        .form-group textarea {
+            height: 150px;
+            resize: vertical;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        /* Flash Messages */
+        .flash-message {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        /* Footer Styling */
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            font-size: 0.9rem;
+            color: #777;
+            border-top: 1px solid #eee;
+        }
+        .footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding: 1rem;
+            }
+            .navbar ul {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                background: var(--gradient);
+                position: absolute;
+                top: 100%;
+                left: 0;
+                padding: 1rem 0;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            }
+            .navbar ul.active {
+                display: flex;
+            }
+            .navbar ul li {
+                margin: 0.5rem 0;
+            }
+            .menu-toggle {
+                display: block;
+            }
+            .contact-header h1 {
+                font-size: 2rem;
+            }
+            .contact-header p {
+                font-size: 1rem;
+            }
+            .contact-form {
+                padding: 1.5rem;
+            }
+        }
+    </style>
 </head>
-<body class="bg-gray-100">
-    <header class="bg-white shadow">
-        <div class="container mx-auto px-6 py-4">
-            <div class="flex justify-between items-center">
-                <a href="/" class="text-2xl font-bold text-gray-800">Aawas.in</a>
-                <nav class="flex space-x-4">
-                    <a href="/" class="text-gray-800 hover:text-blue-500">Home</a>
-                    <a href="/about" class="text-gray-800 hover:text-blue-500">About</a>
-                    <a href="/contact" class="text-gray-800 hover:text-blue-500">Contact</a>
-                    <a href="/property" class="text-gray-800 hover:text-blue-500">My Properties</a>
-                </nav>
-            </div>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-home"></i> Aawas.in
         </div>
-    </header>
-    <div class="container mx-auto px-6 py-12">
-        <div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-lg">
-            <h1 class="text-3xl font-bold text-gray-800 mb-6">Contact Us</h1>
-            <form action="/contact" method="POST" class="space-y-6">
-                <div>
-                    <label for="name" class="block text-sm font-medium text-gray-700">Your Name</label>
-                    <input type="text" id="name" name="name" required
-                           class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+        <ul>
+            <li><a href="{{ url_for('index') }}" class="{{ 'active' if request.endpoint == 'index' else '' }}">Home</a></li>
+            <li><a href="{{ url_for('about') }}" class="{{ 'active' if request.endpoint == 'about' else '' }}">About</a></li>
+            <li><a href="{{ url_for('contact') }}" class="{{ 'active' if request.endpoint == 'contact' else '' }}">Contact</a></li>
+            <li><a href="{{ url_for('my_properties') }}" class="{{ 'active' if request.endpoint == 'my_properties' else '' }}">My Properties</a></li>
+            {% if current_user %}
+                <li><a href="{{ url_for('my_images') }}" class="{{ 'active' if request.endpoint == 'my_images' else '' }}">My Images</a></li>
+                <li><a href="{{ url_for('insert') }}" class="{{ 'active' if request.endpoint == 'insert' else '' }}">Upload</a></li>
+                <li><a href="{{ url_for('logout') }}">Logout ({{ current_user.email }})</a></li>
+            {% else %}
+                <li><a href="{{ url_for('login') }}" class="{{ 'active' if request.endpoint == 'login' else '' }}">Login</a></li>
+                <li><a href="{{ url_for('signup') }}" class="{{ 'active' if request.endpoint == 'signup' else '' }}">Signup</a></li>
+            {% endif %}
+        </ul>
+        <div class="menu-toggle"><i class="fas fa-bars"></i></div>
+    </nav>
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <div class="contact-header">
+            <h1>Contact Us</h1>
+            <p>We’d love to hear from you! Reach out with any questions or feedback.</p>
+        </div>
+        <div class="contact-form">
+            <form action="{{ url_for('contact') }}" method="POST">
+                <div class="form-group">
+                    <label for="name">Your Name</label>
+                    <input type="text" id="name" name="name" required>
                 </div>
-                <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700">Your Email</label>
-                    <input type="email" id="email" name="email" required
-                           class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                <div class="form-group">
+                    <label for="email">Your Email</label>
+                    <input type="email" id="email" name="email" required>
                 </div>
-                <div>
-                    <label for="message" class="block text-sm font-medium text-gray-700">Your Message</label>
-                    <textarea id="message" name="message" rows="5" required
-                              class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"></textarea>
+                <div class="form-group">
+                    <label for="message">Your Message</label>
+                    <textarea id="message" name="message" required></textarea>
                 </div>
-                <div>
-                    <button type="submit"
-                            class="w-full px-4 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        Send Message
-                    </button>
-                </div>
+                <button type="submit" class="btn">Send Message</button>
             </form>
         </div>
-    </div>
-    <footer class="bg-white shadow mt-12">
-        <div class="container mx-auto px-6 py-4">
-            <p class="text-center text-gray-600">© 2025 Aawas.in All rights reserved.</p>
+        <div class="footer">
+            <p>© {{ current_year }} Aawas.in. All rights reserved. | <a href="{{ url_for('contact') }}">Contact Us</a></p>
         </div>
-    </footer>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const menuToggle = document.querySelector('.menu-toggle');
+            const navLinks = document.querySelector('.navbar ul');
+            menuToggle.addEventListener('click', function () {
+                navLinks.classList.toggle('active');
+            });
+        });
+    </script>
 </body>
 </html>

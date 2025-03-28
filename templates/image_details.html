@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aawas.in - Home</title>
+    <title>{{ image.name }} - Property Details - Aawas.in</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -96,145 +96,60 @@
             color: var(--accent-color);
             transform: rotate(90deg);
         }
-        /* Header Styling */
-        .header {
-            background: var(--gradient);
-            padding: 2rem 0;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            position: relative;
-            overflow: hidden;
-        }
-        .header::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: repeating-linear-gradient(45deg,
-                    rgba(255, 255, 255, 0.05),
-                    rgba(255, 255, 255, 0.05) 10px,
-                    transparent 10px,
-                    transparent 20px);
-        }
-        .header h1 {
-            font-size: 4rem;
-            margin-bottom: 0.5rem;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-            font-weight: 800;
-            letter-spacing: 2px;
-            position: relative;
-        }
-        .header h1::after {
-            content: "";
-            display: block;
-            width: 80px;
-            height: 4px;
-            background: var(--accent-color);
-            margin: 8px auto;
-            border-radius: 2px;
-        }
-        .header p {
-            font-size: 1.2rem;
-            color: white;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        .header .btn {
-            margin-top: 1.5rem;
-        }
-        /* Container and Other Styling */
+        /* Container Styling */
         .container {
             max-width: 1200px;
-            margin: 0 auto;
+            margin: 2rem auto;
             padding: 2rem;
         }
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-        .gallery-item {
+        .property-details {
             background: white;
             border-radius: 12px;
-            overflow: hidden;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        .gallery-item.loaded {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .gallery-item:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
-        }
-        .gallery-item img {
-            width: 100%;
-            height: 250px;
-            object-fit: cover;
-            display: block;
-        }
-        .gallery-item-info {
-            padding: 1.5rem;
-        }
-        .gallery-item-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--dark-color);
-        }
-        .gallery-item-description {
-            font-size: 0.95rem;
-            color: #555;
-            margin-bottom: 0.5rem;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
         }
-        .gallery-item-location {
-            font-size: 0.9rem;
-            color: #777;
+        .property-image {
+            width: 100%;
+            max-height: 500px;
+            object-fit: cover;
+        }
+        .property-info {
+            padding: 2rem;
+        }
+        .property-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark-color);
             margin-bottom: 1rem;
         }
-        .gallery-item-link {
-            display: inline-block;
-            margin-top: 1rem;
-            padding: 0.5rem 1rem;
-            background: var(--gradient);
-            color: white;
-            text-decoration: none;
-            border-radius: 30px;
-            font-weight: 500;
-            transition: all 0.3s ease;
+        .property-description {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
         }
-        .gallery-item-link:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        .property-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
         }
-        .auth-message {
-            text-align: center;
-            margin: 2rem 0;
-            padding: 2rem;
-            background: rgba(58, 134, 255, 0.1);
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        .property-meta-item {
+            font-size: 1rem;
+            color: #777;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
-        .auth-message h2 {
-            font-size: 1.8rem;
+        .property-meta-item i {
             color: var(--primary-color);
-            margin-bottom: 0.5rem;
         }
         .btn {
             display: inline-block;
             padding: 0.75rem 1.5rem;
-            margin: 0.5rem;
             background: var(--gradient);
             color: white;
             border: none;
@@ -247,35 +162,6 @@
         .btn:hover {
             transform: scale(1.05);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-        .btn-outline {
-            background: transparent;
-            border: 2px solid var(--primary-color);
-            color: var(--primary-color);
-        }
-        .btn-outline:hover {
-            background: var(--primary-color);
-            color: white;
-        }
-        .search-bar {
-            margin: 2rem 0;
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-        .search-input {
-            flex: 1;
-            padding: 1rem;
-            border: 2px solid var(--primary-color);
-            border-radius: 30px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            min-width: 200px;
-        }
-        .search-input:focus {
-            border-color: var(--secondary-color);
-            box-shadow: 0 0 10px rgba(131, 56, 236, 0.3);
-            outline: none;
         }
         .flash-message {
             padding: 1rem;
@@ -322,15 +208,17 @@
             .user-info {
                 margin: 0.5rem 0;
             }
-            .gallery {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-                gap: 1.5rem;
+            .property-title {
+                font-size: 1.5rem;
             }
-            .header h1 {
-                font-size: 3rem;
+            .property-description {
+                font-size: 1rem;
             }
-            .search-bar {
-                flex-direction: column;
+            .property-image {
+                max-height: 300px;
+            }
+            .property-info {
+                padding: 1.5rem;
             }
         }
     </style>
@@ -357,19 +245,6 @@
         </ul>
         <div class="menu-toggle"><i class="fas fa-bars"></i></div>
     </nav>
-    <div class="header">
-        <h1>Aawas.in</h1>
-        <p>Discover Your Dream Property Today</p>
-        {% if current_user %}
-            <a href="{{ url_for('my_properties') }}" class="btn">
-                <i class="fas fa-building"></i> View My Properties
-            </a>
-        {% else %}
-            <a href="{{ url_for('login') }}" class="btn">
-                <i class="fas fa-sign-in-alt"></i> Login to View Your Properties
-            </a>
-        {% endif %}
-    </div>
     <div class="container">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
@@ -378,53 +253,43 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
-        {% if 'user_id' not in session %}
-            <div class="auth-message">
-                <h2>Join Our Creative Community</h2>
-                <p>Login to add your own properties or create an account to get started.</p>
-                <div>
-                    <a href="{{ url_for('login') }}" class="btn">Login to Add Properties</a>
-                    <a href="{{ url_for('signup') }}" class="btn btn-outline">Create Account</a>
-                </div>
-            </div>
-        {% endif %}
-        <form method="GET" action="{{ url_for('index') }}" class="search-bar">
-            <input type="text" name="search" class="search-input" placeholder="Search by Name..." value="{{ search_query }}">
-            <input type="text" name="location" class="search-input" placeholder="Search by Location..." value="{{ location_query }}">
-            <button type="submit" class="btn"><i class="fas fa-search"></i> Search</button>
-        </form>
-        <div class="gallery" id="imageGrid">
-            {% for image in images %}
-                <div class="gallery-item">
-                    <img src="{{ url_for('static', filename='uploads/' + image.filename) }}" alt="{{ image.name }}">
-                    <div class="gallery-item-info">
-                        <h3 class="gallery-item-title">{{ image.name }}</h3>
-                        <p class="gallery-item-description">{{ image.description }}</p>
-                        <p class="gallery-item-location"><i class="fas fa-map-marker-alt"></i> {{ image.location }}</p>
-                        <a href="{{ url_for('image_detail', image_id=image._id) }}" class="gallery-item-link">
-                            View Details <i class="fas fa-arrow-right"></i>
-                        </a>
+        <div class="property-details">
+            <img src="{{ url_for('static', filename='uploads/' + image.filename) }}" alt="{{ image.name }}" class="property-image">
+            <div class="property-info">
+                <h1 class="property-title">{{ image.name }}</h1>
+                <p class="property-description">{{ image.description }}</p>
+                <div class="property-meta">
+                    <div class="property-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Location: {{ image.location }}</span>
+                    </div>
+                    <div class="property-meta-item">
+                        <i class="fas fa-user"></i>
+                        <span>Contact Name: {{ image.contact_name }}</span>
+                    </div>
+                    <div class="property-meta-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>Contact Email: <a href="mailto:{{ image.contact_email }}">{{ image.contact_email }}</a></span>
+                    </div>
+                    <div class="property-meta-item">
+                        <i class="fas fa-phone"></i>
+                        <span>Contact Phone: {{ image.contact_phone }}</span>
+                    </div>
+                    <div class="property-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Uploaded: {{ image.formatted_date }}</span>
                     </div>
                 </div>
-            {% else %}
-                <div class="auth-message">
-                    <p>No properties found. {% if 'user_id' not in session %}Login to upload properties!{% endif %}</p>
-                </div>
-            {% endfor %}
+                <a href="{{ url_for('index') }}" class="btn">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </a>
+            </div>
         </div>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const galleryItems = document.querySelectorAll('.gallery-item');
             const menuToggle = document.querySelector('.menu-toggle');
             const navLinks = document.querySelector('.nav-links');
-
-            // Load animation for gallery items
-            galleryItems.forEach((item, index) => {
-                setTimeout(() => {
-                    item.classList.add('loaded');
-                }, 100 * index);
-            });
 
             // Mobile menu toggle
             menuToggle.addEventListener('click', function () {
