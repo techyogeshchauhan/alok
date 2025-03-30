@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aawas.in - Home</title>
+    <title>Aawas.in - About Us</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         :root {
-            --primary-color: #6c63ff;
-            --secondary-color: #42a5f5;
+            --primary-color: #3a86ff;
+            --secondary-color: #8338ec;
             --accent-color: #ff006e;
-            --light-color: #f5f7fa;
-            --dark-color: #333;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
             --gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            --approved-color: #28a745;
         }
         * {
             margin: 0;
@@ -22,30 +23,25 @@
             font-family: 'Poppins', sans-serif;
         }
         body {
-            background-color: var(--light-color);
+            background-color: #f0f2f5;
             color: var(--dark-color);
-            line-height: 1.6;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+            overflow-x: hidden;
         }
         /* Navbar Styling */
         .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 2rem;
             background: var(--gradient);
-            color: #fff;
+            padding: 1rem 2rem;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            border-bottom: 3px solid var(--accent-color);
             position: sticky;
             top: 0;
             z-index: 1000;
+            border-bottom: 3px solid var(--accent-color);
+            animation: fadeInDown 0.8s ease-out;
         }
-        .navbar .logo {
+        .logo {
             font-size: 1.8rem;
             font-weight: 700;
             color: white;
@@ -53,35 +49,53 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            transition: transform 0.3s ease;
         }
-        .navbar .logo i {
+        .logo:hover {
+            transform: scale(1.05);
+        }
+        .logo i {
             color: var(--accent-color);
+            animation: pulse 2s infinite;
         }
-        .navbar ul {
+        .nav-links {
             list-style: none;
             display: flex;
+            align-items: center;
             gap: 1.5rem;
-            flex-wrap: wrap;
         }
-        .navbar ul li {
-            display: inline;
+        .nav-links li {
+            position: relative;
         }
-        .navbar ul li a {
+        .nav-links a {
             text-decoration: none;
-            color: #fff;
+            color: white;
             font-size: 1rem;
             font-weight: 500;
             padding: 0.6rem 1.2rem;
             border-radius: 25px;
             transition: all 0.3s ease;
         }
-        .navbar ul li a:hover {
+        .nav-links a:hover {
             background: rgba(255, 255, 255, 0.2);
             transform: translateY(-2px);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
-        .navbar ul li a.active {
+        .nav-links a.active {
             background: var(--accent-color);
+            color: white;
+        }
+        .user-info {
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 400;
+            padding: 0.6rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+        .user-info:hover {
+            background: rgba(255, 255, 255, 0.2);
         }
         .menu-toggle {
             display: none;
@@ -95,144 +109,261 @@
             transform: rotate(90deg);
         }
         /* Header Styling */
-        .home-header {
-            text-align: center;
-            padding: 50px 20px;
+        .header {
             background: var(--gradient);
-            color: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
+            padding: 4rem 0;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 1s ease-out;
         }
-        .home-header h1 {
-            font-size: 3rem;
-            margin-bottom: 15px;
-            font-weight: 700;
+        .header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(45deg,
+                    rgba(255, 255, 255, 0.05),
+                    rgba(255, 255, 255, 0.05) 10px,
+                    transparent 10px,
+                    transparent 20px);
+            animation: slide 30s linear infinite;
         }
-        .home-header p {
+        .header h1 {
+            font-size: 4rem;
+            margin-bottom: 0.5rem;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            font-weight: 800;
+            letter-spacing: 2px;
+            position: relative;
+            animation: slideInUp 0.8s ease-out;
+        }
+        .header h1::after {
+            content: "";
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: var(--accent-color);
+            margin: 8px auto;
+            border-radius: 2px;
+            animation: expand 1s ease-out;
+        }
+        .header p {
             font-size: 1.2rem;
-            margin-bottom: 20px;
+            color: white;
             max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
+            margin: 0 auto;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 0.5s forwards;
         }
-        .home-header .btn {
-            background-color: #fff;
-            color: var(--primary-color);
-            border: none;
-            padding: 10px 20px;
-            font-size: 1rem;
-            font-weight: 600;
-            border-radius: 6px;
-            cursor: pointer;
+        /* About Content Styling */
+        .about-content {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+            animation: fadeIn 1s ease-out;
+        }
+        .about-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
-            text-decoration: none;
+        }
+        .about-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        .about-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            position: relative;
             display: inline-block;
         }
-        .home-header .btn:hover {
-            background-color: var(--primary-color);
-            color: #fff;
-            transform: scale(1.05);
+        .about-section h2::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--accent-color);
+            border-radius: 3px;
         }
-        /* Gallery Styling */
-        .gallery {
+        .about-section p {
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+            color: #555;
+        }
+        .team-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 40px;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
         }
-        .card {
-            background: #fff;
+        .team-member {
+            background: white;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
+            text-align: center;
+            padding: 1.5rem;
         }
-        .card:hover {
+        .team-member:hover {
             transform: translateY(-10px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
         }
-        .card img {
-            width: 100%;
-            height: 200px;
+        .team-member img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
             object-fit: cover;
+            margin: 0 auto 1rem;
+            border: 5px solid var(--light-color);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
-        .card-content {
-            padding: 20px;
-            text-align: center;
+        .team-member h3 {
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
         }
-        .card-content h3 {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
+        .team-member p {
             color: var(--primary-color);
-        }
-        .card-content p {
-            font-size: 1rem;
-            color: #555;
-            margin-bottom: 15px;
-        }
-        .card-content a {
-            display: inline-block;
-            padding: 8px 16px;
-            background: var(--gradient);
-            color: #fff;
-            text-decoration: none;
-            border-radius: 6px;
             font-weight: 500;
+            margin-bottom: 1rem;
+        }
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+        .stat-box {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
         }
-        .card-content a:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
-        .auth-message {
-            text-align: center;
-            margin: 2rem 0;
-            padding: 2rem;
-            background: rgba(108, 99, 255, 0.1);
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-        .auth-message h2 {
-            font-size: 1.8rem;
-            margin-bottom: 10px;
-            color: var(--primary-color);
-        }
-        .auth-message p {
-            font-size: 1rem;
-            color: #555;
-            margin-bottom: 20px;
-        }
-        .auth-message .btn {
+        .stat-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
             background: var(--gradient);
             color: white;
-            padding: 10px 20px;
         }
-        .auth-message .btn-outline {
+        .stat-box:hover .stat-number {
+            color: white;
+        }
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        .stat-label {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            margin: 0.5rem;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: translateX(-100%);
+            transition: 0.5s;
+        }
+        .btn:hover::after {
+            transform: translateX(100%);
+        }
+        .btn-outline {
             background: transparent;
             border: 2px solid var(--primary-color);
             color: var(--primary-color);
         }
-        .auth-message .btn-outline:hover {
+        .btn-outline:hover {
             background: var(--primary-color);
             color: white;
         }
-        /* Flash Messages */
-        .flash-message {
-            padding: 1rem;
-            margin: 1rem 0;
-            border-radius: 8px;
-            text-align: center;
+        /* Animation Keyframes */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
-        .success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        .error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        @keyframes fadeOut {
+            to { opacity: 0; }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        @keyframes expand {
+            from { width: 0; opacity: 0; }
+            to { width: 80px; opacity: 1; }
+        }
+        @keyframes slide {
+            from { background-position: 0 0; }
+            to { background-position: -400px 400px; }
         }
         /* Responsive Design */
         @media (max-width: 768px) {
@@ -240,7 +371,7 @@
                 flex-direction: column;
                 padding: 1rem;
             }
-            .navbar ul {
+            .nav-links {
                 display: none;
                 flex-direction: column;
                 width: 100%;
@@ -251,23 +382,35 @@
                 padding: 1rem 0;
                 box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             }
-            .navbar ul.active {
+            .nav-links.active {
                 display: flex;
+                animation: slideDown 0.5s ease-out;
             }
-            .navbar ul li {
+            .nav-links li {
                 margin: 0.5rem 0;
             }
             .menu-toggle {
                 display: block;
             }
-            .home-header h1 {
-                font-size: 2rem;
+            .header h1 {
+                font-size: 2.5rem;
             }
-            .home-header p {
+            .header p {
                 font-size: 1rem;
+                padding: 0 1rem;
             }
-            .gallery {
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            .about-section {
+                padding: 1.5rem;
+            }
+            @keyframes slideDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
             }
         }
     </style>
@@ -277,15 +420,17 @@
         <div class="logo">
             <i class="fas fa-home"></i> Aawas.in
         </div>
-        <ul>
+        <ul class="nav-links">
             <li><a href="{{ url_for('index') }}" class="{{ 'active' if request.endpoint == 'index' else '' }}">Home</a></li>
             <li><a href="{{ url_for('about') }}" class="{{ 'active' if request.endpoint == 'about' else '' }}">About</a></li>
             <li><a href="{{ url_for('contact') }}" class="{{ 'active' if request.endpoint == 'contact' else '' }}">Contact</a></li>
             <li><a href="{{ url_for('my_properties') }}" class="{{ 'active' if request.endpoint == 'my_properties' else '' }}">My Properties</a></li>
             {% if current_user %}
-                <li><a href="{{ url_for('my_images') }}" class="{{ 'active' if request.endpoint == 'my_images' else '' }}">My Images</a></li>
                 <li><a href="{{ url_for('insert') }}" class="{{ 'active' if request.endpoint == 'insert' else '' }}">Upload</a></li>
-                <li><a href="{{ url_for('logout') }}">Logout ({{ current_user.email }})</a></li>
+            {% endif %}
+            {% if current_user %}
+                <li class="user-info"><i class="fas fa-user"></i> {{ current_user.email }}</li>
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
             {% else %}
                 <li><a href="{{ url_for('login') }}" class="{{ 'active' if request.endpoint == 'login' else '' }}">Login</a></li>
                 <li><a href="{{ url_for('signup') }}" class="{{ 'active' if request.endpoint == 'signup' else '' }}">Signup</a></li>
@@ -293,52 +438,151 @@
         </ul>
         <div class="menu-toggle"><i class="fas fa-bars"></i></div>
     </nav>
-    <div class="container">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="flash-message {{ category }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-        <div class="home-header">
-            <h1>Welcome to Aawas.in</h1>
-            <p>Discover your dream property with ease and confidence.</p>
-            <a href="{{ url_for('my_properties') }}" class="btn">Browse Properties</a>
+
+    <div class="header">
+        <h1>About Aawas.in</h1>
+        <p>Your trusted partner in finding and selling properties with transparency and efficiency</p>
+    </div>
+
+    <div class="about-content">
+        <div class="about-section">
+            <h2>Our Story</h2>
+            <p>Founded in 2020, Aawas.in began with a simple mission: to revolutionize the way people buy and sell properties. Our team of real estate experts and technology enthusiasts came together to create a platform that combines cutting-edge technology with personalized service.</p>
+            <p>What started as a small local operation has grown into one of the most trusted property marketplaces in the region, helping thousands of families find their dream homes and investors discover profitable opportunities.</p>
         </div>
-        {% if 'user_id' not in session %}
-            <div class="auth-message">
-                <h2>Join Our Community</h2>
-                <p>Login to add your own properties or create an account to get started.</p>
-                <div>
-                    <a href="{{ url_for('login') }}" class="btn">Login to Add Properties</a>
-                    <a href="{{ url_for('signup') }}" class="btn btn-outline">Create Account</a>
+
+        <div class="about-section">
+            <h2>Our Mission</h2>
+            <p>At Aawas.in, we're committed to making property transactions simpler, faster, and more transparent. We believe everyone deserves access to accurate information and fair deals when it comes to real estate.</p>
+            <p>Our platform leverages advanced technology to provide:</p>
+            <ul style="margin-left: 2rem; margin-bottom: 1.5rem; color: #555;">
+                <li>Verified property listings with high-quality images and detailed information</li>
+                <li>Advanced search filters to find exactly what you're looking for</li>
+                <li>Secure transaction processes with legal support</li>
+                <li>Market insights and pricing trends to help you make informed decisions</li>
+            </ul>
+        </div>
+
+        <div class="stats-container">
+            <div class="stat-box">
+                <div class="stat-number">5,000+</div>
+                <div class="stat-label">Properties Listed</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">98%</div>
+                <div class="stat-label">Customer Satisfaction</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">50+</div>
+                <div class="stat-label">Cities Covered</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Support Available</div>
+            </div>
+        </div>
+
+        <div class="about-section">
+            <h2>Why Choose Aawas.in?</h2>
+            <p>In a crowded real estate market, Aawas.in stands out through our commitment to quality, transparency, and customer service:</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+                <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; border-left: 4px solid var(--primary-color);">
+                    <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;"><i class="fas fa-shield-alt" style="margin-right: 0.5rem;"></i> Verified Listings</h3>
+                    <p>Every property is personally verified by our team to ensure accuracy and prevent fraud.</p>
+                </div>
+                <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; border-left: 4px solid var(--secondary-color);">
+                    <h3 style="color: var(--secondary-color); margin-bottom: 0.5rem;"><i class="fas fa-search-dollar" style="margin-right: 0.5rem;"></i> Smart Pricing</h3>
+                    <p>Our algorithms analyze market data to suggest competitive prices for buyers and sellers.</p>
+                </div>
+                <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; border-left: 4px solid var(--accent-color);">
+                    <h3 style="color: var(--accent-color); margin-bottom: 0.5rem;"><i class="fas fa-handshake" style="margin-right: 0.5rem;"></i> End-to-End Service</h3>
+                    <p>From listing to closing, we provide support at every step of your property journey.</p>
                 </div>
             </div>
-        {% endif %}
-        <div class="gallery">
-            {% for image in images %}
-                <div class="card">
-                    <img src="{{ url_for('static', filename='uploads/' + image.filename) }}" alt="{{ image.name }}">
-                    <div class="card-content">
-                        <h3>{{ image.name }}</h3>
-                        <p>{{ image.description|truncate(100) }}</p>
-                        <a href="{{ url_for('image_detail', image_id=image._id) }}">View Details</a>
-                    </div>
+        </div>
+
+        <div class="about-section">
+            <h2>Our Team</h2>
+            <p>Behind Aawas.in is a dedicated team of real estate professionals, technologists, and customer service experts committed to delivering exceptional experiences.</p>
+            
+            <div class="team-grid">
+                <div class="team-member">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Team Member">
+                    <h3>Rajesh Sharma</h3>
+                    <p>Founder & CEO</p>
+                    <p>15+ years in real estate development</p>
                 </div>
-            {% else %}
-                <div class="auth-message">
-                    <p>No properties found. {% if 'user_id' not in session %}Login to upload properties!{% endif %}</p>
+                <div class="team-member">
+                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Team Member">
+                    <h3>Priya Patel</h3>
+                    <p>Head of Operations</p>
+                    <p>Expert in property management</p>
                 </div>
-            {% endfor %}
+                <div class="team-member">
+                    <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Team Member">
+                    <h3>Amit Kumar</h3>
+                    <p>Technology Director</p>
+                    <p>Building innovative real estate tech</p>
+                </div>
+                <div class="team-member">
+                    <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Team Member">
+                    <h3>Neha Gupta</h3>
+                    <p>Customer Success</p>
+                    <p>Ensuring your satisfaction</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="about-section" style="text-align: center;">
+            <h2>Ready to Begin Your Property Journey?</h2>
+            <p>Whether you're buying, selling, or just exploring, Aawas.in is here to help.</p>
+            <div style="margin-top: 2rem;">
+                <a href="{{ url_for('index') }}" class="btn">Browse Properties</a>
+                {% if not current_user %}
+                    <a href="{{ url_for('signup') }}" class="btn btn-outline">Create Free Account</a>
+                {% endif %}
+            </div>
         </div>
     </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const menuToggle = document.querySelector('.menu-toggle');
-            const navLinks = document.querySelector('.navbar ul');
+            const navLinks = document.querySelector('.nav-links');
+
+            // Mobile menu toggle
             menuToggle.addEventListener('click', function () {
                 navLinks.classList.toggle('active');
+                this.classList.toggle('active');
+            });
+
+            // Add hover effect to logo
+            const logo = document.querySelector('.logo');
+            logo.addEventListener('mouseenter', () => {
+                logo.style.animation = 'float 2s ease-in-out infinite';
+            });
+            logo.addEventListener('mouseleave', () => {
+                logo.style.animation = 'none';
+            });
+
+            // Animate stats when they come into view
+            const statBoxes = document.querySelectorAll('.stat-box');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            statBoxes.forEach(box => {
+                box.style.opacity = '0';
+                box.style.transform = 'translateY(20px)';
+                box.style.transition = 'all 0.6s ease-out';
+                observer.observe(box);
             });
         });
     </script>

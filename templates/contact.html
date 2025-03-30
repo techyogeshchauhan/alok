@@ -4,16 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aawas.in - Contact Us</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         :root {
-            --primary-color: #6c63ff;
-            --secondary-color: #42a5f5;
+            --primary-color: #3a86ff;
+            --secondary-color: #8338ec;
             --accent-color: #ff006e;
-            --light-color: #f5f7fa;
-            --dark-color: #333;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
             --gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            --approved-color: #28a745;
         }
         * {
             margin: 0;
@@ -22,30 +23,25 @@
             font-family: 'Poppins', sans-serif;
         }
         body {
-            background-color: var(--light-color);
+            background-color: #f0f2f5;
             color: var(--dark-color);
-            line-height: 1.6;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+            overflow-x: hidden;
         }
         /* Navbar Styling */
         .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 2rem;
             background: var(--gradient);
-            color: #fff;
+            padding: 1rem 2rem;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            border-bottom: 3px solid var(--accent-color);
             position: sticky;
             top: 0;
             z-index: 1000;
+            border-bottom: 3px solid var(--accent-color);
+            animation: fadeInDown 0.8s ease-out;
         }
-        .navbar .logo {
+        .logo {
             font-size: 1.8rem;
             font-weight: 700;
             color: white;
@@ -53,35 +49,53 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            transition: transform 0.3s ease;
         }
-        .navbar .logo i {
+        .logo:hover {
+            transform: scale(1.05);
+        }
+        .logo i {
             color: var(--accent-color);
+            animation: pulse 2s infinite;
         }
-        .navbar ul {
+        .nav-links {
             list-style: none;
             display: flex;
+            align-items: center;
             gap: 1.5rem;
-            flex-wrap: wrap;
         }
-        .navbar ul li {
-            display: inline;
+        .nav-links li {
+            position: relative;
         }
-        .navbar ul li a {
+        .nav-links a {
             text-decoration: none;
-            color: #fff;
+            color: white;
             font-size: 1rem;
             font-weight: 500;
             padding: 0.6rem 1.2rem;
             border-radius: 25px;
             transition: all 0.3s ease;
         }
-        .navbar ul li a:hover {
+        .nav-links a:hover {
             background: rgba(255, 255, 255, 0.2);
             transform: translateY(-2px);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
-        .navbar ul li a.active {
+        .nav-links a.active {
             background: var(--accent-color);
+            color: white;
+        }
+        .user-info {
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 400;
+            padding: 0.6rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+        .user-info:hover {
+            background: rgba(255, 255, 255, 0.2);
         }
         .menu-toggle {
             display: none;
@@ -94,81 +108,220 @@
             color: var(--accent-color);
             transform: rotate(90deg);
         }
-        /* Contact Header Styling */
-        .contact-header {
-            text-align: center;
-            padding: 50px 20px;
+        /* Header Styling */
+        .header {
             background: var(--gradient);
-            color: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
+            padding: 4rem 0;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 1s ease-out;
         }
-        .contact-header h1 {
-            font-size: 3rem;
-            margin-bottom: 15px;
-            font-weight: 700;
+        .header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(45deg,
+                    rgba(255, 255, 255, 0.05),
+                    rgba(255, 255, 255, 0.05) 10px,
+                    transparent 10px,
+                    transparent 20px);
+            animation: slide 30s linear infinite;
         }
-        .contact-header p {
+        .header h1 {
+            font-size: 4rem;
+            margin-bottom: 0.5rem;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            font-weight: 800;
+            letter-spacing: 2px;
+            position: relative;
+            animation: slideInUp 0.8s ease-out;
+        }
+        .header h1::after {
+            content: "";
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: var(--accent-color);
+            margin: 8px auto;
+            border-radius: 2px;
+            animation: expand 1s ease-out;
+        }
+        .header p {
             font-size: 1.2rem;
+            color: white;
             max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
+            margin: 0 auto;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 0.5s forwards;
         }
-        /* Form Styling */
-        .contact-form {
-            max-width: 600px;
-            margin: 40px auto;
-            background: #fff;
-            padding: 2rem;
+        /* Contact Content Styling */
+        .contact-content {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+            animation: fadeIn 1s ease-out;
+        }
+        .contact-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 2rem;
+        }
+        .contact-info {
+            background: white;
             border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .contact-info.animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .contact-info:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        .contact-info h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            position: relative;
+        }
+        .contact-info h2::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--accent-color);
+            border-radius: 3px;
+        }
+        .contact-method {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+        .contact-icon {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-right: 1rem;
+            min-width: 30px;
+        }
+        .contact-details h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.3rem;
+            color: var(--dark-color);
+        }
+        .contact-details p, 
+        .contact-details a {
+            color: #555;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .contact-details a:hover {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+        .contact-form {
+            background: white;
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .contact-form.animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .contact-form:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
         }
         .form-group {
             margin-bottom: 1.5rem;
         }
         .form-group label {
             display: block;
-            font-size: 1rem;
             font-weight: 500;
-            color: var(--dark-color);
             margin-bottom: 0.5rem;
+            color: var(--dark-color);
         }
         .form-group input,
-        .form-group textarea {
+        .form-group textarea,
+        .form-group select {
             width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #ddd;
-            border-radius: 6px;
+            padding: 0.8rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
             font-size: 1rem;
             transition: all 0.3s ease;
         }
         .form-group input:focus,
-        .form-group textarea:focus {
+        .form-group textarea:focus,
+        .form-group select:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 8px rgba(108, 99, 255, 0.2);
+            box-shadow: 0 0 10px rgba(58, 134, 255, 0.2);
             outline: none;
         }
         .form-group textarea {
-            height: 150px;
+            min-height: 150px;
             resize: vertical;
         }
         .btn {
-            display: block;
-            width: 100%;
-            padding: 0.75rem;
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
             background: var(--gradient);
             color: white;
             border: none;
-            border-radius: 6px;
-            font-size: 1rem;
+            border-radius: 30px;
+            text-decoration: none;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
         .btn:hover {
             transform: scale(1.05);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: translateX(-100%);
+            transition: 0.5s;
+        }
+        .btn:hover::after {
+            transform: translateX(100%);
+        }
+        .map-container {
+            margin-top: 3rem;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            height: 400px;
+        }
+        .map-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
         }
         /* Flash Messages */
         .flash-message {
@@ -176,6 +329,7 @@
             margin: 1rem 0;
             border-radius: 8px;
             text-align: center;
+            animation: slideInRight 0.5s ease-out, fadeOut 0.5s ease-out 3s forwards;
         }
         .success {
             background: #d4edda;
@@ -187,23 +341,56 @@
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
-        /* Footer Styling */
-        .footer {
-            text-align: center;
-            margin-top: 50px;
-            padding: 20px;
-            font-size: 0.9rem;
-            color: #777;
-            border-top: 1px solid #eee;
+        /* Animation Keyframes */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
-        .footer a {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: bold;
-            transition: all 0.3s ease;
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        .footer a:hover {
-            text-decoration: underline;
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        @keyframes fadeOut {
+            to { opacity: 0; }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        @keyframes expand {
+            from { width: 0; opacity: 0; }
+            to { width: 80px; opacity: 1; }
+        }
+        @keyframes slide {
+            from { background-position: 0 0; }
+            to { background-position: -400px 400px; }
         }
         /* Responsive Design */
         @media (max-width: 768px) {
@@ -211,7 +398,7 @@
                 flex-direction: column;
                 padding: 1rem;
             }
-            .navbar ul {
+            .nav-links {
                 display: none;
                 flex-direction: column;
                 width: 100%;
@@ -222,23 +409,35 @@
                 padding: 1rem 0;
                 box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             }
-            .navbar ul.active {
+            .nav-links.active {
                 display: flex;
+                animation: slideDown 0.5s ease-out;
             }
-            .navbar ul li {
+            .nav-links li {
                 margin: 0.5rem 0;
             }
             .menu-toggle {
                 display: block;
             }
-            .contact-header h1 {
-                font-size: 2rem;
+            .header h1 {
+                font-size: 2.5rem;
             }
-            .contact-header p {
+            .header p {
                 font-size: 1rem;
+                padding: 0 1rem;
             }
-            .contact-form {
-                padding: 1.5rem;
+            .contact-container {
+                grid-template-columns: 1fr;
+            }
+            @keyframes slideDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
             }
         }
     </style>
@@ -248,15 +447,17 @@
         <div class="logo">
             <i class="fas fa-home"></i> Aawas.in
         </div>
-        <ul>
+        <ul class="nav-links">
             <li><a href="{{ url_for('index') }}" class="{{ 'active' if request.endpoint == 'index' else '' }}">Home</a></li>
             <li><a href="{{ url_for('about') }}" class="{{ 'active' if request.endpoint == 'about' else '' }}">About</a></li>
             <li><a href="{{ url_for('contact') }}" class="{{ 'active' if request.endpoint == 'contact' else '' }}">Contact</a></li>
             <li><a href="{{ url_for('my_properties') }}" class="{{ 'active' if request.endpoint == 'my_properties' else '' }}">My Properties</a></li>
             {% if current_user %}
-                <li><a href="{{ url_for('my_images') }}" class="{{ 'active' if request.endpoint == 'my_images' else '' }}">My Images</a></li>
                 <li><a href="{{ url_for('insert') }}" class="{{ 'active' if request.endpoint == 'insert' else '' }}">Upload</a></li>
-                <li><a href="{{ url_for('logout') }}">Logout ({{ current_user.email }})</a></li>
+            {% endif %}
+            {% if current_user %}
+                <li class="user-info"><i class="fas fa-user"></i> {{ current_user.email }}</li>
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
             {% else %}
                 <li><a href="{{ url_for('login') }}" class="{{ 'active' if request.endpoint == 'login' else '' }}">Login</a></li>
                 <li><a href="{{ url_for('signup') }}" class="{{ 'active' if request.endpoint == 'signup' else '' }}">Signup</a></li>
@@ -264,7 +465,13 @@
         </ul>
         <div class="menu-toggle"><i class="fas fa-bars"></i></div>
     </nav>
-    <div class="container">
+
+    <div class="header">
+        <h1>Contact Us</h1>
+        <p>Have questions? We're here to help! Reach out to our team anytime.</p>
+    </div>
+
+    <div class="contact-content">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -272,37 +479,124 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
-        <div class="contact-header">
-            <h1>Contact Us</h1>
-            <p>We’d love to hear from you! Reach out with any questions or feedback.</p>
+
+        <div class="contact-container">
+            <div class="contact-info">
+                <h2>Get In Touch</h2>
+                <div class="contact-method">
+                    <div class="contact-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="contact-details">
+                        <h3>Our Office</h3>
+                        <p>123 Property Plaza, Real Estate District<br>Mumbai, Maharashtra 400001</p>
+                    </div>
+                </div>
+                <div class="contact-method">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <div class="contact-details">
+                        <h3>Call Us</h3>
+                        <p><a href="tel:+911234567890">+91 12345 67890</a></p>
+                        <p>Mon-Fri: 9am-6pm</p>
+                    </div>
+                </div>
+                <div class="contact-method">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="contact-details">
+                        <h3>Email Us</h3>
+                        <p><a href="mailto:info@aawas.in">info@aawas.in</a></p>
+                        <p>Response within 24 hours</p>
+                    </div>
+                </div>
+                <div class="contact-method">
+                    <div class="contact-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <div class="contact-details">
+                        <h3>Customer Support</h3>
+                        <p><a href="mailto:support@aawas.in">support@aawas.in</a></p>
+                        <p>24/7 dedicated support</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contact-form">
+                <h2>Send Us a Message</h2>
+                <form action="{{ url_for('contact') }}" method="POST">
+                    <div class="form-group">
+                        <label for="name">Your Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <select id="subject" name="subject" required>
+                            <option value="">Select a subject</option>
+                            <option value="General Inquiry">General Inquiry</option>
+                            <option value="Property Listing">Property Listing</option>
+                            <option value="Technical Support">Technical Support</option>
+                            <option value="Feedback">Feedback</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Your Message</label>
+                        <textarea id="message" name="message" required></textarea>
+                    </div>
+                    <button type="submit" class="btn">Send Message</button>
+                </form>
+            </div>
         </div>
-        <div class="contact-form">
-            <form action="{{ url_for('contact') }}" method="POST">
-                <div class="form-group">
-                    <label for="name">Your Name</label>
-                    <input type="text" id="name" name="name" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">Your Email</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="message">Your Message</label>
-                    <textarea id="message" name="message" required></textarea>
-                </div>
-                <button type="submit" class="btn">Send Message</button>
-            </form>
-        </div>
-        <div class="footer">
-            <p>© {{ current_year }} Aawas.in. All rights reserved. | <a href="{{ url_for('contact') }}">Contact Us</a></p>
+
+        <div class="map-container">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3771.715986115632!2d72.83251431537796!3d19.05272225800585!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c8dfb4c1e8d5%3A0x1f7b3e9b3b3b3b3b!2s123%20Property%20Plaza%2C%20Real%20Estate%20District%2C%20Mumbai%2C%20Maharashtra%20400001!5e0!3m2!1sen!2sin!4v1620000000000!5m2!1sen!2sin" allowfullscreen="" loading="lazy"></iframe>
         </div>
     </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const menuToggle = document.querySelector('.menu-toggle');
-            const navLinks = document.querySelector('.navbar ul');
+            const navLinks = document.querySelector('.nav-links');
+            const contactSections = document.querySelectorAll('.contact-info, .contact-form');
+
+            // Mobile menu toggle
             menuToggle.addEventListener('click', function () {
                 navLinks.classList.toggle('active');
+                this.classList.toggle('active');
+            });
+
+            // Add hover effect to logo
+            const logo = document.querySelector('.logo');
+            logo.addEventListener('mouseenter', () => {
+                logo.style.animation = 'float 2s ease-in-out infinite';
+            });
+            logo.addEventListener('mouseleave', () => {
+                logo.style.animation = 'none';
+            });
+
+            // Animate contact sections when they come into view
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animated');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            contactSections.forEach(section => {
+                observer.observe(section);
             });
         });
     </script>

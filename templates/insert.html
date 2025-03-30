@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% if image %}Edit Property{% else %}Upload New Property{% endif %} - Aawas.in</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         :root {
-            --primary-color: #6c63ff;
-            --secondary-color: #42a5f5;
+            --primary-color: #3a86ff;
+            --secondary-color: #8338ec;
             --accent-color: #ff006e;
-            --light-color: #f5f7fa;
-            --dark-color: #333;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
             --gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
         }
         * {
@@ -22,30 +22,25 @@
             font-family: 'Poppins', sans-serif;
         }
         body {
-            background-color: var(--light-color);
+            background-color: #f0f2f5;
             color: var(--dark-color);
-            line-height: 1.6;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+            overflow-x: hidden;
         }
         /* Navbar Styling */
         .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 2rem;
             background: var(--gradient);
-            color: #fff;
+            padding: 1rem 2rem;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            border-bottom: 3px solid var(--accent-color);
             position: sticky;
             top: 0;
             z-index: 1000;
+            border-bottom: 3px solid var(--accent-color);
+            animation: fadeInDown 0.8s ease-out;
         }
-        .navbar .logo {
+        .logo {
             font-size: 1.8rem;
             font-weight: 700;
             color: white;
@@ -53,35 +48,53 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            transition: transform 0.3s ease;
         }
-        .navbar .logo i {
+        .logo:hover {
+            transform: scale(1.05);
+        }
+        .logo i {
             color: var(--accent-color);
+            animation: pulse 2s infinite;
         }
-        .navbar ul {
+        .nav-links {
             list-style: none;
             display: flex;
+            align-items: center;
             gap: 1.5rem;
-            flex-wrap: wrap;
         }
-        .navbar ul li {
-            display: inline;
+        .nav-links li {
+            position: relative;
         }
-        .navbar ul li a {
+        .nav-links a {
             text-decoration: none;
-            color: #fff;
+            color: white;
             font-size: 1rem;
             font-weight: 500;
             padding: 0.6rem 1.2rem;
             border-radius: 25px;
             transition: all 0.3s ease;
         }
-        .navbar ul li a:hover {
+        .nav-links a:hover {
             background: rgba(255, 255, 255, 0.2);
             transform: translateY(-2px);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
-        .navbar ul li a.active {
+        .nav-links a.active {
             background: var(--accent-color);
+            color: white;
+        }
+        .user-info {
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 400;
+            padding: 0.6rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+        .user-info:hover {
+            background: rgba(255, 255, 255, 0.2);
         }
         .menu-toggle {
             display: none;
@@ -95,56 +108,103 @@
             transform: rotate(90deg);
         }
         /* Header Styling */
-        .form-header {
-            text-align: center;
-            padding: 50px 20px;
+        .header {
             background: var(--gradient);
-            color: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
+            padding: 4rem 0;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 1s ease-out;
         }
-        .form-header h1 {
+        .header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(45deg,
+                    rgba(255, 255, 255, 0.05),
+                    rgba(255, 255, 255, 0.05) 10px,
+                    transparent 10px,
+                    transparent 20px);
+            animation: slide 30s linear infinite;
+        }
+        .header h1 {
             font-size: 3rem;
-            margin-bottom: 15px;
-            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            font-weight: 800;
+            letter-spacing: 2px;
+            position: relative;
+            animation: slideInUp 0.8s ease-out;
+        }
+        .header h1::after {
+            content: "";
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: var(--accent-color);
+            margin: 8px auto;
+            border-radius: 2px;
+            animation: expand 1s ease-out;
+        }
+        .header p {
+            font-size: 1.2rem;
+            color: white;
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 0.5s forwards;
         }
         /* Form Styling */
+        .form-container {
+            max-width: 800px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+            animation: fadeIn 1s ease-out;
+        }
         .form-card {
-            max-width: 700px;
-            margin: 40px auto;
-            background: #fff;
-            padding: 2rem;
+            background: white;
             border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .form-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
         }
         .form-group {
             margin-bottom: 1.5rem;
         }
         .form-group label {
             display: block;
-            font-size: 1rem;
             font-weight: 500;
-            color: var(--dark-color);
             margin-bottom: 0.5rem;
+            color: var(--dark-color);
         }
         .form-group input,
-        .form-group textarea {
+        .form-group textarea,
+        .form-group select {
             width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #ddd;
-            border-radius: 6px;
+            padding: 0.8rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
             font-size: 1rem;
             transition: all 0.3s ease;
         }
         .form-group input:focus,
-        .form-group textarea:focus {
+        .form-group textarea:focus,
+        .form-group select:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 8px rgba(108, 99, 255, 0.2);
+            box-shadow: 0 0 10px rgba(58, 134, 255, 0.2);
             outline: none;
         }
         .form-group textarea {
-            height: 150px;
+            min-height: 150px;
             resize: vertical;
         }
         .file-upload {
@@ -153,14 +213,15 @@
             width: 100%;
             padding: 2rem;
             border: 2px dashed var(--primary-color);
-            border-radius: 6px;
+            border-radius: 8px;
             text-align: center;
             transition: all 0.3s ease;
             cursor: pointer;
             margin-bottom: 1rem;
+            background: rgba(58, 134, 255, 0.05);
         }
         .file-upload:hover {
-            background: rgba(108, 99, 255, 0.05);
+            background: rgba(58, 134, 255, 0.1);
             border-color: var(--secondary-color);
         }
         .file-upload input[type="file"] {
@@ -173,44 +234,78 @@
             cursor: pointer;
         }
         .file-upload-icon {
-            font-size: 2rem;
+            font-size: 2.5rem;
             color: var(--primary-color);
             margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        .file-upload:hover .file-upload-icon {
+            transform: translateY(-5px);
         }
         .file-upload-text {
             color: #555;
             font-size: 1rem;
         }
-        .current-file {
+        .file-upload-text strong {
+            color: var(--primary-color);
+        }
+        .file-list {
+            margin-top: 1rem;
+        }
+        .file-item {
             display: flex;
             align-items: center;
             padding: 0.8rem;
-            background: rgba(108, 99, 255, 0.1);
-            border-radius: 6px;
-            margin-bottom: 1rem;
+            background: rgba(58, 134, 255, 0.1);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
             font-size: 0.9rem;
             color: var(--dark-color);
+            transition: all 0.3s ease;
         }
-        .current-file i {
+        .file-item:hover {
+            background: rgba(58, 134, 255, 0.15);
+        }
+        .file-item i {
             margin-right: 0.5rem;
             color: var(--primary-color);
         }
         .btn {
-            display: block;
-            width: 100%;
-            padding: 0.75rem;
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
             background: var(--gradient);
             color: white;
             border: none;
-            border-radius: 6px;
-            font-size: 1rem;
+            border-radius: 30px;
+            text-decoration: none;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
         .btn:hover {
             transform: scale(1.05);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: translateX(-100%);
+            transition: 0.5s;
+        }
+        .btn:hover::after {
+            transform: translateX(100%);
+        }
+        .btn-block {
+            display: block;
+            width: 100%;
+            text-align: center;
         }
         /* Flash Messages */
         .flash-message {
@@ -218,6 +313,7 @@
             margin: 1rem 0;
             border-radius: 8px;
             text-align: center;
+            animation: slideInRight 0.5s ease-out, fadeOut 0.5s ease-out 3s forwards;
         }
         .success {
             background: #d4edda;
@@ -229,13 +325,64 @@
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
+        /* Animation Keyframes */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        @keyframes fadeOut {
+            to { opacity: 0; }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        @keyframes expand {
+            from { width: 0; opacity: 0; }
+            to { width: 80px; opacity: 1; }
+        }
+        @keyframes slide {
+            from { background-position: 0 0; }
+            to { background-position: -400px 400px; }
+        }
         /* Responsive Design */
         @media (max-width: 768px) {
             .navbar {
                 flex-direction: column;
                 padding: 1rem;
             }
-            .navbar ul {
+            .nav-links {
                 display: none;
                 flex-direction: column;
                 width: 100%;
@@ -246,20 +393,37 @@
                 padding: 1rem 0;
                 box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             }
-            .navbar ul.active {
+            .nav-links.active {
                 display: flex;
+                animation: slideDown 0.5s ease-out;
             }
-            .navbar ul li {
+            .nav-links li {
                 margin: 0.5rem 0;
             }
             .menu-toggle {
                 display: block;
             }
-            .form-header h1 {
-                font-size: 2rem;
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            .header p {
+                font-size: 1rem;
+            }
+            .form-container {
+                padding: 0 1rem;
             }
             .form-card {
                 padding: 1.5rem;
+            }
+            @keyframes slideDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
             }
         }
     </style>
@@ -269,15 +433,17 @@
         <div class="logo">
             <i class="fas fa-home"></i> Aawas.in
         </div>
-        <ul>
+        <ul class="nav-links">
             <li><a href="{{ url_for('index') }}" class="{{ 'active' if request.endpoint == 'index' else '' }}">Home</a></li>
             <li><a href="{{ url_for('about') }}" class="{{ 'active' if request.endpoint == 'about' else '' }}">About</a></li>
             <li><a href="{{ url_for('contact') }}" class="{{ 'active' if request.endpoint == 'contact' else '' }}">Contact</a></li>
             <li><a href="{{ url_for('my_properties') }}" class="{{ 'active' if request.endpoint == 'my_properties' else '' }}">My Properties</a></li>
             {% if current_user %}
-                <li><a href="{{ url_for('my_images') }}" class="{{ 'active' if request.endpoint == 'my_images' else '' }}">My Images</a></li>
                 <li><a href="{{ url_for('insert') }}" class="{{ 'active' if request.endpoint == 'insert' else '' }}">Upload</a></li>
-                <li><a href="{{ url_for('logout') }}">Logout ({{ current_user.email }})</a></li>
+            {% endif %}
+            {% if current_user %}
+                <li class="user-info"><i class="fas fa-user"></i> {{ current_user.email }}</li>
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
             {% else %}
                 <li><a href="{{ url_for('login') }}" class="{{ 'active' if request.endpoint == 'login' else '' }}">Login</a></li>
                 <li><a href="{{ url_for('signup') }}" class="{{ 'active' if request.endpoint == 'signup' else '' }}">Signup</a></li>
@@ -285,7 +451,13 @@
         </ul>
         <div class="menu-toggle"><i class="fas fa-bars"></i></div>
     </nav>
-    <div class="container">
+
+    <div class="header">
+        <h1>{% if image %}Edit Property{% else %}Upload New Property{% endif %}</h1>
+        <p>{% if image %}Update your property details{% else %}Fill in the details to list your property{% endif %}</p>
+    </div>
+
+    <div class="form-container">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -293,9 +465,7 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
-        <div class="form-header">
-            <h1>{% if image %}Edit Property{% else %}Upload New Property{% endif %}</h1>
-        </div>
+
         <div class="form-card">
             <form method="POST" enctype="multipart/form-data" action="{% if image %}{{ url_for('edit_image', image_id=image._id) }}{% else %}{{ url_for('insert') }}{% endif %}">
                 <div class="form-group">
@@ -304,86 +474,136 @@
                 </div>
                 <div class="form-group">
                     <label for="description">Property Description</label>
-                    <textarea id="description" name="description" placeholder="Enter property description" required>{% if image %}{{ image.description }}{% endif %}</textarea>
+                    <textarea id="description" name="description" placeholder="Enter detailed property description" required>{% if image %}{{ image.description }}{% endif %}</textarea>
                 </div>
                 <div class="form-group">
                     <label for="location">Property Location</label>
-                    <input type="text" id="location" name="location" value="{% if image %}{{ image.location }}{% endif %}" placeholder="Enter property location (e.g., Delhi)" required>
+                    <input type="text" id="location" name="location" value="{% if image %}{{ image.location }}{% endif %}" placeholder="Enter full property address" required>
                 </div>
                 <div class="form-group">
                     <label for="contact_name">Contact Name</label>
-                    <input type="text" id="contact_name" name="contact_name" value="{% if image %}{{ image.contact_name }}{% endif %}" placeholder="Enter contact name" required>
+                    <input type="text" id="contact_name" name="contact_name" value="{% if image %}{{ image.contact_name }}{% endif %}" placeholder="Enter your name" required>
                 </div>
                 <div class="form-group">
                     <label for="contact_email">Contact Email</label>
-                    <input type="email" id="contact_email" name="contact_email" value="{% if image %}{{ image.contact_email }}{% endif %}" placeholder="Enter contact email" required>
+                    <input type="email" id="contact_email" name="contact_email" value="{% if image %}{{ image.contact_email }}{% endif %}" placeholder="Enter your email" required>
                 </div>
                 <div class="form-group">
                     <label for="contact_phone">Contact Phone</label>
-                    <input type="text" id="contact_phone" name="contact_phone" value="{% if image %}{{ image.contact_phone }}{% endif %}" placeholder="Enter contact phone" required>
+                    <input type="tel" id="contact_phone" name="contact_phone" value="{% if image %}{{ image.contact_phone }}{% endif %}" placeholder="Enter your phone number" required>
                 </div>
                 <div class="form-group">
-                    <label>Property Image</label>
+                    <label>Property Images</label>
                     <label class="file-upload">
                         <div class="file-upload-icon">
                             <i class="fas fa-cloud-upload-alt"></i>
                         </div>
                         <div class="file-upload-text">
-                            <strong>Click to select</strong> or drag and drop your image<br>
-                            <small>Supported formats: JPG, PNG, GIF</small>
+                            <strong>Click to upload</strong> or drag and drop<br>
+                            <small>High-quality images recommended (JPG, PNG, GIF)</small>
                         </div>
-                        <input type="file" name="image" id="image" accept="image/*" multiple {% if not image %}required{% endif %}>
+                        <input type="file" name="image" id="image" accept="image/*" {% if not image %}required{% endif %}>
                     </label>
                     <div id="file-list" class="file-list">
                         {% if image %}
-                            <div class="current-file">
+                            <div class="file-item">
                                 <i class="fas fa-image"></i>
-                                <span>Current file: {{ image.filename }}</span>
+                                <span>Current image: {{ image.filename }}</span>
                             </div>
                         {% endif %}
                     </div>
                 </div>
-                <button type="submit" class="btn">
+                <button type="submit" class="btn btn-block">
                     <i class="fas {% if image %}fa-save{% else %}fa-upload{% endif %}"></i>
                     {% if image %}Update Property{% else %}Upload Property{% endif %}
                 </button>
             </form>
         </div>
     </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const menuToggle = document.querySelector('.menu-toggle');
-            const navLinks = document.querySelector('.navbar ul');
+            const navLinks = document.querySelector('.nav-links');
+
+            // Mobile menu toggle
             menuToggle.addEventListener('click', function () {
                 navLinks.classList.toggle('active');
+                this.classList.toggle('active');
             });
 
+            // Add hover effect to logo
+            const logo = document.querySelector('.logo');
+            logo.addEventListener('mouseenter', () => {
+                logo.style.animation = 'float 2s ease-in-out infinite';
+            });
+            logo.addEventListener('mouseleave', () => {
+                logo.style.animation = 'none';
+            });
+
+            // File upload preview
             const fileInput = document.getElementById('image');
             const fileList = document.getElementById('file-list');
-            fileInput.addEventListener('change', function(event) {
+            
+            fileInput.addEventListener('change', function() {
                 fileList.innerHTML = '';
+                
                 if (this.files.length > 0) {
-                    const ul = document.createElement('ul');
-                    ul.style.listStyleType = 'none';
-                    ul.style.padding = '0';
-                    ul.style.marginTop = '1rem';
                     for (let i = 0; i < this.files.length; i++) {
-                        const li = document.createElement('li');
-                        li.style.display = 'flex';
-                        li.style.alignItems = 'center';
-                        li.style.gap = '0.5rem';
-                        li.style.padding = '0.5rem';
-                        li.style.background = 'rgba(108, 99, 255, 0.1)';
-                        li.style.borderRadius = '6px';
-                        li.style.marginBottom = '0.5rem';
-                        li.innerHTML = `<i class="fas fa-file-image" style="color: var(--primary-color);"></i> ${this.files[i].name}`;
-                        ul.appendChild(li);
+                        const fileItem = document.createElement('div');
+                        fileItem.className = 'file-item';
+                        fileItem.innerHTML = `
+                            <i class="fas fa-image"></i>
+                            <span>${this.files[i].name}</span>
+                        `;
+                        fileList.appendChild(fileItem);
                     }
-                    fileList.appendChild(ul);
-                } else {
-                    fileList.textContent = 'No files selected';
+                } else if (fileList.children.length === 0 && '{{ image }}') {
+                    fileList.innerHTML = `
+                        <div class="file-item">
+                            <i class="fas fa-image"></i>
+                            <span>Current image: {{ image.filename }}</span>
+                        </div>
+                    `;
                 }
             });
+
+            // Drag and drop functionality
+            const fileUpload = document.querySelector('.file-upload');
+            
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                fileUpload.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                fileUpload.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                fileUpload.addEventListener(eventName, unhighlight, false);
+            });
+
+            function highlight() {
+                fileUpload.classList.add('highlight');
+            }
+
+            function unhighlight() {
+                fileUpload.classList.remove('highlight');
+            }
+
+            fileUpload.addEventListener('drop', handleDrop, false);
+
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                fileInput.files = files;
+                fileInput.dispatchEvent(new Event('change'));
+            }
         });
     </script>
 </body>

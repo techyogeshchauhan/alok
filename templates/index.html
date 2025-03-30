@@ -14,6 +14,7 @@
             --light-color: #f8f9fa;
             --dark-color: #212529;
             --gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            --approved-color: #28a745;
         }
         * {
             margin: 0;
@@ -24,6 +25,7 @@
         body {
             background-color: #f0f2f5;
             color: var(--dark-color);
+            overflow-x: hidden;
         }
         /* Navbar Styling */
         .navbar {
@@ -37,6 +39,7 @@
             top: 0;
             z-index: 1000;
             border-bottom: 3px solid var(--accent-color);
+            animation: fadeInDown 0.8s ease-out;
         }
         .logo {
             font-size: 1.8rem;
@@ -46,9 +49,14 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+        .logo:hover {
+            transform: scale(1.05);
         }
         .logo i {
             color: var(--accent-color);
+            animation: pulse 2s infinite;
         }
         .nav-links {
             list-style: none;
@@ -84,6 +92,10 @@
             padding: 0.6rem 1rem;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+        .user-info:hover {
+            background: rgba(255, 255, 255, 0.2);
         }
         .menu-toggle {
             display: none;
@@ -99,11 +111,12 @@
         /* Header Styling */
         .header {
             background: var(--gradient);
-            padding: 2rem 0;
+            padding: 4rem 0;
             text-align: center;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             position: relative;
             overflow: hidden;
+            animation: fadeIn 1s ease-out;
         }
         .header::before {
             content: "";
@@ -117,6 +130,7 @@
                     rgba(255, 255, 255, 0.05) 10px,
                     transparent 10px,
                     transparent 20px);
+            animation: slide 30s linear infinite;
         }
         .header h1 {
             font-size: 4rem;
@@ -126,6 +140,7 @@
             font-weight: 800;
             letter-spacing: 2px;
             position: relative;
+            animation: slideInUp 0.8s ease-out;
         }
         .header h1::after {
             content: "";
@@ -135,21 +150,27 @@
             background: var(--accent-color);
             margin: 8px auto;
             border-radius: 2px;
+            animation: expand 1s ease-out;
         }
         .header p {
             font-size: 1.2rem;
             color: white;
             max-width: 600px;
             margin: 0 auto;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 0.5s forwards;
         }
         .header .btn {
             margin-top: 1.5rem;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 0.8s forwards;
         }
         /* Container and Other Styling */
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 2rem;
+            animation: fadeIn 1s ease-out;
         }
         .gallery {
             display: grid;
@@ -165,13 +186,14 @@
             transition: all 0.3s ease;
             opacity: 0;
             transform: translateY(20px);
+            position: relative;
         }
         .gallery-item.loaded {
             opacity: 1;
             transform: translateY(0);
         }
         .gallery-item:hover {
-            transform: translateY(-10px);
+            transform: translateY(-10px) scale(1.02);
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
         }
         .gallery-item img {
@@ -179,6 +201,22 @@
             height: 250px;
             object-fit: cover;
             display: block;
+            transition: transform 0.5s ease;
+        }
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+        .status-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: white;
+            background: var(--approved-color);
+            animation: pulse 2s infinite;
         }
         .gallery-item-info {
             padding: 1.5rem;
@@ -213,10 +251,25 @@
             border-radius: 30px;
             font-weight: 500;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
         .gallery-item-link:hover {
             transform: scale(1.05);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        .gallery-item-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        .gallery-item-link:hover::before {
+            left: 100%;
         }
         .auth-message {
             text-align: center;
@@ -225,6 +278,11 @@
             background: rgba(58, 134, 255, 0.1);
             border-radius: 12px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transform: perspective(500px) rotateX(0deg);
+            transition: transform 0.5s ease;
+        }
+        .auth-message:hover {
+            transform: perspective(500px) rotateX(5deg);
         }
         .auth-message h2 {
             font-size: 1.8rem;
@@ -243,10 +301,26 @@
             font-weight: 500;
             cursor: pointer;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
         .btn:hover {
             transform: scale(1.05);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: translateX(-100%);
+            transition: 0.5s;
+        }
+        .btn:hover::after {
+            transform: translateX(100%);
         }
         .btn-outline {
             background: transparent;
@@ -262,6 +336,7 @@
             display: flex;
             gap: 1rem;
             flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease-out;
         }
         .search-input {
             flex: 1;
@@ -276,12 +351,14 @@
             border-color: var(--secondary-color);
             box-shadow: 0 0 10px rgba(131, 56, 236, 0.3);
             outline: none;
+            transform: scale(1.02);
         }
         .flash-message {
             padding: 1rem;
             margin: 1rem 0;
             border-radius: 8px;
             text-align: center;
+            animation: slideInRight 0.5s ease-out, fadeOut 0.5s ease-out 3s forwards;
         }
         .success {
             background: #d4edda;
@@ -292,6 +369,73 @@
             background: #f8d7da;
             color: #721c24;
             border: 1px solid #f5c6cb;
+        }
+        /* Animation Keyframes */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        @keyframes fadeOut {
+            to { opacity: 0; }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        @keyframes expand {
+            from { width: 0; opacity: 0; }
+            to { width: 80px; opacity: 1; }
+        }
+        @keyframes slide {
+            from { background-position: 0 0; }
+            to { background-position: -400px 400px; }
+        }
+        /* Floating animation for logo */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
         }
         /* Responsive Design */
         @media (max-width: 768px) {
@@ -312,6 +456,7 @@
             }
             .nav-links.active {
                 display: flex;
+                animation: slideDown 0.5s ease-out;
             }
             .nav-links li {
                 margin: 0.5rem 0;
@@ -332,6 +477,16 @@
             .search-bar {
                 flex-direction: column;
             }
+            @keyframes slideDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
         }
     </style>
 </head>
@@ -346,8 +501,15 @@
             <li><a href="{{ url_for('contact') }}" class="{{ 'active' if request.endpoint == 'contact' else '' }}">Contact</a></li>
             <li><a href="{{ url_for('my_properties') }}" class="{{ 'active' if request.endpoint == 'my_properties' else '' }}">My Properties</a></li>
             {% if current_user %}
-                <li><a href="{{ url_for('my_images') }}" class="{{ 'active' if request.endpoint == 'my_images' else '' }}">My Images</a></li>
                 <li><a href="{{ url_for('insert') }}" class="{{ 'active' if request.endpoint == 'insert' else '' }}">Upload</a></li>
+            {% endif %}
+            {% if session.get('admin') %}
+                <li><a href="{{ url_for('admin_panel') }}" class="{{ 'active' if request.endpoint == 'admin_panel' else '' }}">Admin Panel</a></li>
+                <li><a href="{{ url_for('admin_logout') }}">Admin Logout</a></li>
+            {% else %}
+                <li><a href="{{ url_for('admin_login') }}" class="{{ 'active' if request.endpoint == 'admin_login' else '' }}">Admin Login</a></li>
+            {% endif %}
+            {% if current_user %}
                 <li class="user-info"><i class="fas fa-user"></i> {{ current_user.email }}</li>
                 <li><a href="{{ url_for('logout') }}">Logout</a></li>
             {% else %}
@@ -381,7 +543,7 @@
         {% if 'user_id' not in session %}
             <div class="auth-message">
                 <h2>Join Our Creative Community</h2>
-                <p>Login to add your own properties or create an account to get started.</p>
+                <p>Login to add your own properties or create an account to get started. All properties require admin approval before appearing here.</p>
                 <div>
                     <a href="{{ url_for('login') }}" class="btn">Login to Add Properties</a>
                     <a href="{{ url_for('signup') }}" class="btn btn-outline">Create Account</a>
@@ -389,14 +551,15 @@
             </div>
         {% endif %}
         <form method="GET" action="{{ url_for('index') }}" class="search-bar">
-            <input type="text" name="search" class="search-input" placeholder="Search by Name..." value="{{ search_query }}">
-            <input type="text" name="location" class="search-input" placeholder="Search by Location..." value="{{ location_query }}">
+            <input type="text" name="search" class="search-input" placeholder="Search by Name..." value="{{ request.args.get('search', '') }}">
+            <input type="text" name="location" class="search-input" placeholder="Search by Location..." value="{{ request.args.get('location', '') }}">
             <button type="submit" class="btn"><i class="fas fa-search"></i> Search</button>
         </form>
         <div class="gallery" id="imageGrid">
             {% for image in images %}
                 <div class="gallery-item">
                     <img src="{{ url_for('static', filename='uploads/' + image.filename) }}" alt="{{ image.name }}">
+                    <span class="status-badge">Approved</span>
                     <div class="gallery-item-info">
                         <h3 class="gallery-item-title">{{ image.name }}</h3>
                         <p class="gallery-item-description">{{ image.description }}</p>
@@ -408,7 +571,10 @@
                 </div>
             {% else %}
                 <div class="auth-message">
-                    <p>No properties found. {% if 'user_id' not in session %}Login to upload properties!{% endif %}</p>
+                    <p>No approved properties found. {% if 'user_id' not in session %}Login to upload properties for approval!{% else %}Upload properties to get started!{% endif %}</p>
+                    {% if current_user %}
+                        <a href="{{ url_for('insert') }}" class="btn">Upload Now</a>
+                    {% endif %}
                 </div>
             {% endfor %}
         </div>
@@ -419,16 +585,45 @@
             const menuToggle = document.querySelector('.menu-toggle');
             const navLinks = document.querySelector('.nav-links');
 
-            // Load animation for gallery items
+            // Load animation for gallery items with staggered delay
             galleryItems.forEach((item, index) => {
                 setTimeout(() => {
                     item.classList.add('loaded');
-                }, 100 * index);
+                }, 150 * index);
             });
 
             // Mobile menu toggle
             menuToggle.addEventListener('click', function () {
                 navLinks.classList.toggle('active');
+                this.classList.toggle('active');
+            });
+
+            // Add hover effect to logo
+            const logo = document.querySelector('.logo');
+            logo.addEventListener('mouseenter', () => {
+                logo.style.animation = 'float 2s ease-in-out infinite';
+            });
+            logo.addEventListener('mouseleave', () => {
+                logo.style.animation = 'none';
+            });
+
+            // Intersection Observer for lazy loading animations
+            const observerOptions = {
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animated');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            // Observe elements that should animate when scrolled into view
+            document.querySelectorAll('.gallery-item, .auth-message, .search-bar').forEach(el => {
+                observer.observe(el);
             });
         });
     </script>
