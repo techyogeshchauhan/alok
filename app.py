@@ -18,10 +18,9 @@ app.secret_key = os.getenv('SECRET_KEY', 'your_secure_secret_key_here')
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # Limit file uploads to 16MB
 
-# MongoDB setup
-client = MongoClient(os.getenv('MONGO_URI', 'mongodb://localhost:27017/'))
+# MongoDB setup (hardcoded)
+client = MongoClient("mongodb+srv://yc993205:Pd7cueOuSODFmADy@flask.kbgjgxj.mongodb.net/image_catalog?retryWrites=true&w=majority")
 db = client.image_catalog
-
 # Flask-Mail configuration
 app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER', 'smtp.gmail.com')
 app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT', 587))
@@ -461,5 +460,5 @@ def logout():
     return redirect('/')
 
 if __name__ == '__main__':
-    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    # os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+    app.run(host='0.0.0.0', port=5000)
