@@ -19,7 +19,9 @@ app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # Limit file uploads to 16MB
 
 # MongoDB setup (hardcoded)
-client = MongoClient("mongodb+srv://yc993205:Pd7cueOuSODFmADy@flask.kbgjgxj.mongodb.net/image_catalog?retryWrites=true&w=majority")
+# Replace with this exact connection string format
+MONGO_URI = "mongodb+srv://yc993205:Pd7cueOuSODFmADy@flask.kbgjgxj.mongodb.net/image_catalog?retryWrites=true&w=majority&tls=true&tlsAllowInvalidCertificates=true"
+client = MongoClient(MONGO_URI, connectTimeoutMS=30000, socketTimeoutMS=30000)
 db = client.image_catalog
 # Flask-Mail configuration
 app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER', 'smtp.gmail.com')
