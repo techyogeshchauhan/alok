@@ -38,13 +38,19 @@ logger = logging.getLogger(__name__)
 
 # MongoDB setup with enhanced error handling
 try:
-    MONGO_URI = os.getenv('MONGO_URI', "mongodb://localhost:27017/image_catalog")
+    MONGO_URI = os.getenv('MONGO_URI', "mongodb+srv://yc993205:Pd7cueOuSODFmADy@flask.kbgjgxj.mongodb.net/image_catalog?retryWrites=true&w=majority&appName=flask")
+    
+    # Verify the URI starts with correct scheme
+    if not MONGO_URI.startswith(('mongodb://', 'mongodb+srv://')):
+        raise ValueError("Invalid MongoDB URI scheme")
+    
     client = MongoClient(
         MONGO_URI,
-        connectTimeoutMS=30000,
+        connectTimeoutMS=10000,
         socketTimeoutMS=30000,
         serverSelectionTimeoutMS=5000
     )
+    
     # Test the connection
     client.admin.command('ping')
     db = client.get_database()
