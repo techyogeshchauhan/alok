@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, send_file
 from werkzeug.utils import secure_filename
-from pymongo import MongoClient, GridFS
+from pymongo import MongoClient
+from gridfs import GridFS
 from bson.objectid import ObjectId
 from datetime import datetime, timedelta
 from flask_mail import Mail, Message
@@ -18,7 +19,7 @@ app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY', 'your_secure_secret_key_here')
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB upload limit
 
-# MongoDB setup with GridFS
+# MongoDB setup
 MONGO_URI = "mongodb+srv://yc993205:Pd7cueOuSODFmADy@flask.kbgjgxj.mongodb.net/image_catalog?retryWrites=true&w=majority&tls=true"
 client = MongoClient(MONGO_URI, connectTimeoutMS=30000, socketTimeoutMS=30000)
 db = client.image_catalog
