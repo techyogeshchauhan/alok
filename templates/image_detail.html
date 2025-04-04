@@ -193,7 +193,8 @@
                 <div class="image-slider">
                     <div class="slider">
                         <div class="slide">
-                            <img src="{{ url_for('static', filename='uploads/' + image.filename) }}" alt="{{ image.name }}">
+                            <!-- here is another change to the image slider -->
+                            <img src="{{ url_for('serve_image', file_id=image.file_id) }}" class="img-fluid">
                         </div>
                     </div>
                 </div>

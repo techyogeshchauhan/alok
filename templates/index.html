@@ -532,7 +532,8 @@
         <div class="gallery">
             {% for image in images %}
                 <div class="gallery-item">
-                    <img src="{{ url_for('static', filename='uploads/' + image.filename) }}" alt="{{ image.name }}">
+                    <!-- here is chnage and this is the image slider -->
+                    <img src="{{ url_for('serve_image', file_id=image.file_id) }}" class="img-fluid">
                     <span class="status-badge">Approved</span>
                     <div class="gallery-item-info">
                         <h3 class="gallery-item-title">{{ image.name }}</h3>

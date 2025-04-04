@@ -311,7 +311,8 @@
                     {% for image in images %}
                     <div class="image-card">
                         <div class="card-img">
-                            <img src="{{ url_for('static', filename='uploads/' + image.filename) }}" 
+                            <!-- here is the image that will change the image  -->
+                            <img src="{{ url_for('serve_image', file_id=image.file_id) }}" class="img-fluid"> 
                                  alt="{{ image.name }}">
                             <div class="card-overlay">
                                 <a href="/edit-image/{{ image._id }}" class="action-btn edit" title="Edit">
