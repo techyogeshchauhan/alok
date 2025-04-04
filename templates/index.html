@@ -533,7 +533,7 @@
             {% for image in images %}
                 <div class="gallery-item">
                     <!-- here is chnage and this is the image slider -->
-                    <img src="{{ url_for('serve_image', file_id=image.file_id) }}" class="img-fluid">
+                    <img src="{{ url_for('serve_image', file_id=image.file_id) }}" alt="{{ image.name }}">
                     <span class="status-badge">Approved</span>
                     <div class="gallery-item-info">
                         <h3 class="gallery-item-title">{{ image.name }}</h3>

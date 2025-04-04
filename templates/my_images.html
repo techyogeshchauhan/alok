@@ -312,7 +312,7 @@
                     <div class="image-card">
                         <div class="card-img">
                             <!-- here is the image that will change the image  -->
-                            <img src="{{ url_for('serve_image', file_id=image.file_id) }}" class="img-fluid"> 
+                            <img src="{{ url_for('serve_image', file_id=image.file_id) }}" alt="{{ image.name }}"> 
                                  alt="{{ image.name }}">
                             <div class="card-overlay">
                                 <a href="/edit-image/{{ image._id }}" class="action-btn edit" title="Edit">

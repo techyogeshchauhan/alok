@@ -10,6 +10,7 @@ import os
 import hashlib
 import io
 from PIL import Image
+import logging
 
 # Load environment variables
 load_dotenv()
@@ -18,7 +19,6 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY', 'your_secure_secret_key_here')
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB upload limit
-app.config['UPLOAD_FOLDER'] = 'static/uploads'
 
 # MongoDB setup
 MONGO_URI = "mongodb+srv://yc993205:Pd7cueOuSODFmADy@flask.kbgjgxj.mongodb.net/image_catalog?retryWrites=true&w=majority&tls=true"
@@ -38,6 +38,10 @@ mail = Mail(app)
 ADMIN_EMAIL = os.getenv('ADMIN_EMAIL', 'admin@example.com')
 ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD', 'admin123')
 
+# Setup logging
+logging.basicConfig(level=logging.INFO)
+app.logger.setLevel(logging.INFO)
+
 # Helper functions
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
@@ -51,7 +55,7 @@ def resize_image(file_stream, max_size=(1200, 1200)):
         img_io.seek(0)
         return img_io
     except Exception as e:
-        print(f"Error resizing image: {str(e)}")
+        app.logger.error(f"Error resizing image: {str(e)}")
         return file_stream
 
 def get_user_images(user_id=None, search_query=None, location_query=None, approved_only=True):
@@ -79,7 +83,9 @@ def is_admin():
 @app.route('/', methods=['GET'])
 def index():
     search_query = request.args.get('search', '').strip()
-    location_query = request.args.get('location', '').strip()
+    location_query = request 
+   
+.args.get('location', '').strip()
     images = get_user_images(search_query=search_query, location_query=location_query)
     return render_template('index.html', images=images, current_user=get_current_user())
 
@@ -159,7 +165,7 @@ def insert():
     
     return render_template('insert.html', image=None, current_user=get_current_user())
 
-@app.route('/image/<file_id>')
+@app.route('/serve-image/<file_id>')
 def serve_image(file_id):
     try:
         if not ObjectId.is_valid(file_id):
@@ -169,10 +175,11 @@ def serve_image(file_id):
         return send_file(
             io.BytesIO(grid_out.read()),
             mimetype='image/jpeg',
+            as_attachment=False,
             download_name=grid_out.filename
         )
     except Exception as e:
-        print(f"Error serving image: {str(e)}")
+        app.logger.error(f"Error serving image: {str(e)}")
         return send_file('static/images/placeholder.jpg', mimetype='image/jpeg')
 
 # Admin Routes
@@ -236,6 +243,9 @@ def reject_property(image_id):
         return redirect('/admin/login')
     
     try:
+        image = db.images.find_one({'_id': ObjectId(image_id)})
+        if image and 'file_id' in image:
+            fs.delete(ObjectId(image['file_id']))
         db.images.delete_one({'_id': ObjectId(image_id)})
         flash('Property rejected!', 'success')
     except Exception as e:
@@ -247,7 +257,7 @@ def admin_logout():
     session.pop('admin', None)
     flash('Admin logged out successfully!', 'success')
     return redirect('/admin/login')
-# Existing routes (modified where necessary)
+
 @app.route('/edit-image/<image_id>', methods=['GET', 'POST'])
 def edit_image(image_id):
     if 'user_id' not in session:
@@ -269,18 +279,18 @@ def edit_image(image_id):
                 'contact_name': request.form['contact_name'],
                 'contact_email': request.form['contact_email'],
                 'contact_phone': request.form['contact_phone'],
-                'status': 'pending'  # Edited properties need re-approval
+                'status': 'pending'
             }
 
             if 'image' in request.files and request.files['image'].filename:
                 file = request.files['image']
-                old_file = os.path.join(app.config['UPLOAD_FOLDER'], image['filename'])
-                if os.path.exists(old_file):
-                    os.remove(old_file)
-                filename = secure_filename(file.filename)
-                file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                file.save(file_path)
-                update_data['filename'] = filename
+                img_io = resize_image(file.stream)
+                # Delete old file from GridFS if exists
+                if 'file_id' in image:
+                    fs.delete(ObjectId(image['file_id']))
+                # Store new file in GridFS
+                file_id = fs.put(img_io, filename=secure_filename(file.filename))
+                update_data['file_id'] = str(file_id)
 
             db.images.update_one({'_id': ObjectId(image_id)}, {'$set': update_data})
             flash('Property updated and submitted for re-approval!', 'success')
@@ -300,9 +310,8 @@ def delete_image(image_id):
     try:
         image = db.images.find_one({'_id': ObjectId(image_id), 'user_id': session['user_id']})
         if image:
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], image['filename'])
-            if os.path.exists(file_path):
-                os.remove(file_path)
+            if 'file_id' in image:
+                fs.delete(ObjectId(image['file_id']))
             db.images.delete_one({'_id': ObjectId(image_id)})
             flash('Property deleted successfully!', 'success')
         else:
@@ -375,7 +384,6 @@ def contact():
             flash(f'Failed to send email: {str(e)}', 'error')
         return redirect('/contact')
     return render_template('contact.html', current_user=get_current_user())
-# Add these routes to your existing Flask app
 
 @app.route('/forgot-password', methods=['GET', 'POST'])
 def forgot_password():
@@ -384,11 +392,9 @@ def forgot_password():
         user = db.users.find_one({'email': email})
         
         if user:
-            # Generate reset token
             token = str(ObjectId())
             reset_expires = datetime.utcnow() + timedelta(hours=1)
             
-            # Store token in database
             db.password_resets.insert_one({
                 'user_id': user['_id'],
                 'token': token,
@@ -396,7 +402,6 @@ def forgot_password():
                 'used': False
             })
             
-            # Send email with reset link
             reset_link = url_for('reset_password', token=token, _external=True)
             
             try:
@@ -424,7 +429,6 @@ If you didn't request this, please ignore this email.""",
                 flash('Failed to send reset email. Please try again.', 'error')
                 app.logger.error(f"Failed to send reset email: {str(e)}")
         else:
-            # For security, don't reveal if the email exists
             flash('If this email exists in our system, a reset link has been sent', 'success')
         
         return redirect(url_for('forgot_password'))
@@ -433,7 +437,6 @@ If you didn't request this, please ignore this email.""",
 
 @app.route('/reset-password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
-    # Find valid reset token
     reset_request = db.password_resets.find_one({
         'token': token,
         'used': False,
@@ -452,13 +455,11 @@ def reset_password(token):
             flash('Passwords do not match', 'error')
             return redirect(url_for('reset_password', token=token))
         
-        # Update password
         db.users.update_one(
             {'_id': reset_request['user_id']},
             {'$set': {'password': hash_password(new_password)}}
         )
         
-        # Mark token as used
         db.password_resets.update_one(
             {'_id': reset_request['_id']},
             {'$set': {'used': True}}
@@ -481,5 +482,4 @@ def logout():
     return redirect('/')
 
 if __name__ == '__main__':
-    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
     app.run(host='0.0.0.0', port=5000)

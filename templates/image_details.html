@@ -255,7 +255,7 @@
         {% endwith %}
         <div class="property-details">
             <!-- here is chnage  -->
-            <img src="{{ url_for('serve_image', file_id=image.file_id) }}" class="img-fluid">
+            <img src="{{ url_for('serve_image', file_id=image.file_id) }}" alt="{{ image.name }}">
             <div class="property-info">
                 <h1 class="property-title">{{ image.name }}</h1>
                 <p class="property-description">{{ image.description }}</p>

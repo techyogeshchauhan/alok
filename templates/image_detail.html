@@ -194,7 +194,7 @@
                     <div class="slider">
                         <div class="slide">
                             <!-- here is another change to the image slider -->
-                            <img src="{{ url_for('serve_image', file_id=image.file_id) }}" class="img-fluid">
+                            <img src="{{ url_for('serve_image', file_id=image.file_id) }}" alt="{{ image.name }}">
                         </div>
                     </div>
                 </div>
