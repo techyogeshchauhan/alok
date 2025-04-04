@@ -83,9 +83,7 @@ def is_admin():
 @app.route('/', methods=['GET'])
 def index():
     search_query = request.args.get('search', '').strip()
-    location_query = request 
-   
-.args.get('location', '').strip()
+    location_query = request.args.get('location', '').strip()
     images = get_user_images(search_query=search_query, location_query=location_query)
     return render_template('index.html', images=images, current_user=get_current_user())
 
@@ -93,7 +91,7 @@ def index():
 def my_images():
     if 'user_id' not in session:
         flash('Please log in to view your images.', 'error')
-        return redirect('/login')
+        return redirect('/ Lotgin')
     images = get_user_images(session['user_id'], approved_only=False)
     return render_template('my_images.html', images=images, current_user=get_current_user())
 
