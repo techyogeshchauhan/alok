@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, send_file
 from werkzeug.utils import secure_filename
 from pymongo import MongoClient
-from gridfs import GridFS 
+from gridfs import GridFS
 from bson.objectid import ObjectId
 from datetime import datetime, timedelta
 from flask_mail import Mail, Message
@@ -18,12 +18,14 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY', 'your_secure_secret_key_here')
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB upload limit
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
 
 # MongoDB setup
 MONGO_URI = "mongodb+srv://yc993205:Pd7cueOuSODFmADy@flask.kbgjgxj.mongodb.net/image_catalog?retryWrites=true&w=majority&tls=true"
 client = MongoClient(MONGO_URI, connectTimeoutMS=30000, socketTimeoutMS=30000)
 db = client.image_catalog
 fs = GridFS(db)  # GridFS instance for file storage
+
 # Flask-Mail configuration
 app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER', 'smtp.gmail.com')
 app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT', 587))
@@ -32,17 +34,27 @@ app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
 app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 mail = Mail(app)
 
-# Admin credentials (in practice, store these in environment variables or database)
+# Admin credentials
 ADMIN_EMAIL = os.getenv('ADMIN_EMAIL', 'admin@example.com')
-ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD', 'admin123')  # Hashed in production
+ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD', 'admin123')
 
 # Helper functions
 def hash_password(password):
-    """Hash password using SHA-256."""
     return hashlib.sha256(password.encode()).hexdigest()
 
+def resize_image(file_stream, max_size=(1200, 1200)):
+    try:
+        img = Image.open(file_stream)
+        img.thumbnail(max_size)
+        img_io = io.BytesIO()
+        img.save(img_io, 'JPEG', quality=85)
+        img_io.seek(0)
+        return img_io
+    except Exception as e:
+        print(f"Error resizing image: {str(e)}")
+        return file_stream
+
 def get_user_images(user_id=None, search_query=None, location_query=None, approved_only=True):
-    """Get images with optional filters."""
     query = {}
     if user_id:
         query['user_id'] = user_id
@@ -55,14 +67,12 @@ def get_user_images(user_id=None, search_query=None, location_query=None, approv
     return list(db.images.find(query).sort('upload_date', -1))
 
 def get_current_user():
-    """Retrieve the current user from session."""
     if 'user_id' in session:
         user = db.users.find_one({'_id': ObjectId(session['user_id'])})
         return user
     return None
 
 def is_admin():
-    """Check if current session is admin."""
     return 'admin' in session and session['admin'] == True
 
 # Routes
@@ -121,68 +131,6 @@ def insert():
             for file in files:
                 if file and file.filename:
                     filename = secure_filename(file.filename)
-                    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                    file.save(file_path)
-
-                    image_data = {
-                        'name': request.form['name'],
-                        'description': request.form['description'],
-                        'location': request.form['location'],
-                        'filename': filename,
-                        'upload_date': datetime.utcnow(),
-                        'user_id': session['user_id'],
-                        'contact_name': request.form['contact_name'],
-                        'contact_email': request.form['contact_email'],
-                        'contact_phone': request.form['contact_phone'],
-                        'status': 'pending'  # New property starts as pending
-                    }
-                    image_data_list.append(image_data)
-
-            db.images.insert_many(image_data_list)
-            flash('Properties submitted for approval!', 'success')
-            return redirect('/my-properties')
-        except Exception as e:
-            flash(f'Error uploading properties: {str(e)}', 'error')
-            return redirect('/insert')
-    
-    # For GET requests, pass image=None since we're creating a new property
-    return render_template('insert.html', image=None, current_user=get_current_user())
-@app.route('/image/<file_id>')
-def serve_image(file_id):
-    try:
-        # First check if it's a valid ObjectId
-        if not ObjectId.is_valid(file_id):
-            return send_file('static/images/placeholder.jpg', mimetype='image/jpeg')
-            
-        grid_out = fs.get(ObjectId(file_id))
-        return send_file(
-            io.BytesIO(grid_out.read()),
-            mimetype='image/jpeg',
-            download_name=grid_out.filename
-        )
-    except Exception as e:
-        print(f"Error serving image: {str(e)}")
-        return send_file('static/images/placeholder.jpg', mimetype='image/jpeg')
-
-# Update your existing routes to use file_id instead of filename
-@app.route('/insert', methods=['POST'])
-def insert():
-    if 'user_id' not in session:
-        flash('Please log in to upload properties.', 'error')
-        return redirect('/login')
-
-    if request.method == 'POST':
-        try:
-            files = request.files.getlist('image')
-            if not files or all(file.filename == '' for file in files):
-                flash('No files selected', 'error')
-                return redirect('/insert')
-
-            image_data_list = []
-            for file in files:
-                if file and file.filename:
-                    # Process image
-                    filename = secure_filename(file.filename)
                     img_io = resize_image(file.stream)
                     
                     # Store in GridFS
@@ -192,7 +140,7 @@ def insert():
                         'name': request.form['name'],
                         'description': request.form['description'],
                         'location': request.form['location'],
-                        'file_id': str(file_id),  # Store as string
+                        'file_id': str(file_id),
                         'upload_date': datetime.utcnow(),
                         'user_id': session['user_id'],
                         'contact_name': request.form['contact_name'],
@@ -208,6 +156,24 @@ def insert():
         except Exception as e:
             flash(f'Error uploading properties: {str(e)}', 'error')
             return redirect('/insert')
+    
+    return render_template('insert.html', image=None, current_user=get_current_user())
+
+@app.route('/image/<file_id>')
+def serve_image(file_id):
+    try:
+        if not ObjectId.is_valid(file_id):
+            return send_file('static/images/placeholder.jpg', mimetype='image/jpeg')
+            
+        grid_out = fs.get(ObjectId(file_id))
+        return send_file(
+            io.BytesIO(grid_out.read()),
+            mimetype='image/jpeg',
+            download_name=grid_out.filename
+        )
+    except Exception as e:
+        print(f"Error serving image: {str(e)}")
+        return send_file('static/images/placeholder.jpg', mimetype='image/jpeg')
 
 # Admin Routes
 @app.route('/admin/login', methods=['GET', 'POST'])
@@ -218,13 +184,12 @@ def admin_login():
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
-        if email == ADMIN_EMAIL and password == ADMIN_PASSWORD:  # In production, use hashed password
+        if email == ADMIN_EMAIL and password == ADMIN_PASSWORD:
             session['admin'] = True
             flash('Admin logged in successfully!', 'success')
-            return redirect('/admin')  # Redirect to admin panel after login
+            return redirect('/admin')
         else:
             flash('Invalid admin credentials', 'error')
-            return render_template('admin_login.html')  # Stay on login page if credentials are wrong
     return render_template('admin_login.html')
 
 @app.route('/admin')
@@ -233,12 +198,10 @@ def admin_panel():
         flash('Admin access required', 'error')
         return redirect('/admin/login')
     
-    # Get pending properties
     pending_properties = list(db.images.find({'status': 'pending'}).sort('upload_date', -1))
     for prop in pending_properties:
         prop['formatted_date'] = prop['upload_date'].strftime('%Y-%m-%d')
     
-    # Calculate statistics
     stats = {
         'approved_count': db.images.count_documents({'status': 'approved'}),
         'pending_count': db.images.count_documents({'status': 'pending'}),
@@ -273,13 +236,8 @@ def reject_property(image_id):
         return redirect('/admin/login')
     
     try:
-        image = db.images.find_one({'_id': ObjectId(image_id)})
-        if image:
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], image['filename'])
-            if os.path.exists(file_path):
-                os.remove(file_path)
-            db.images.delete_one({'_id': ObjectId(image_id)})
-            flash('Property rejected and deleted!', 'success')
+        db.images.delete_one({'_id': ObjectId(image_id)})
+        flash('Property rejected!', 'success')
     except Exception as e:
         flash(f'Error rejecting property: {str(e)}', 'error')
     return redirect('/admin')
@@ -289,7 +247,6 @@ def admin_logout():
     session.pop('admin', None)
     flash('Admin logged out successfully!', 'success')
     return redirect('/admin/login')
-
 # Existing routes (modified where necessary)
 @app.route('/edit-image/<image_id>', methods=['GET', 'POST'])
 def edit_image(image_id):
@@ -524,5 +481,5 @@ def logout():
     return redirect('/')
 
 if __name__ == '__main__':
-    # os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
     app.run(host='0.0.0.0', port=5000)
