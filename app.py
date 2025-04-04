@@ -1,28 +1,28 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session, flash, send_file
 from werkzeug.utils import secure_filename
-from pymongo import MongoClient
+from pymongo import MongoClient, GridFS
 from bson.objectid import ObjectId
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask_mail import Mail, Message
-from datetime import datetime, timedelta 
 from dotenv import load_dotenv
 import os
 import hashlib
+import io
+from PIL import Image
 
-# Load environment variables from .env file
+# Load environment variables
 load_dotenv()
 
 # Initialize Flask app
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY', 'your_secure_secret_key_here')
-app.config['UPLOAD_FOLDER'] = 'static/uploads'
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # Limit file uploads to 16MB
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB upload limit
 
-# MongoDB setup (hardcoded)
-# Replace with this exact connection string format
-MONGO_URI = "mongodb+srv://yc993205:Pd7cueOuSODFmADy@flask.kbgjgxj.mongodb.net/image_catalog?retryWrites=true&w=majority&tls=true&tlsAllowInvalidCertificates=true"
+# MongoDB setup with GridFS
+MONGO_URI = "mongodb+srv://yc993205:Pd7cueOuSODFmADy@flask.kbgjgxj.mongodb.net/image_catalog?retryWrites=true&w=majority&tls=true"
 client = MongoClient(MONGO_URI, connectTimeoutMS=30000, socketTimeoutMS=30000)
 db = client.image_catalog
+fs = GridFS(db)  # GridFS instance for file storage
 # Flask-Mail configuration
 app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER', 'smtp.gmail.com')
 app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT', 587))
@@ -146,6 +146,67 @@ def insert():
     
     # For GET requests, pass image=None since we're creating a new property
     return render_template('insert.html', image=None, current_user=get_current_user())
+@app.route('/image/<file_id>')
+def serve_image(file_id):
+    try:
+        # First check if it's a valid ObjectId
+        if not ObjectId.is_valid(file_id):
+            return send_file('static/images/placeholder.jpg', mimetype='image/jpeg')
+            
+        grid_out = fs.get(ObjectId(file_id))
+        return send_file(
+            io.BytesIO(grid_out.read()),
+            mimetype='image/jpeg',
+            download_name=grid_out.filename
+        )
+    except Exception as e:
+        print(f"Error serving image: {str(e)}")
+        return send_file('static/images/placeholder.jpg', mimetype='image/jpeg')
+
+# Update your existing routes to use file_id instead of filename
+@app.route('/insert', methods=['POST'])
+def insert():
+    if 'user_id' not in session:
+        flash('Please log in to upload properties.', 'error')
+        return redirect('/login')
+
+    if request.method == 'POST':
+        try:
+            files = request.files.getlist('image')
+            if not files or all(file.filename == '' for file in files):
+                flash('No files selected', 'error')
+                return redirect('/insert')
+
+            image_data_list = []
+            for file in files:
+                if file and file.filename:
+                    # Process image
+                    filename = secure_filename(file.filename)
+                    img_io = resize_image(file.stream)
+                    
+                    # Store in GridFS
+                    file_id = fs.put(img_io, filename=filename)
+                    
+                    image_data = {
+                        'name': request.form['name'],
+                        'description': request.form['description'],
+                        'location': request.form['location'],
+                        'file_id': str(file_id),  # Store as string
+                        'upload_date': datetime.utcnow(),
+                        'user_id': session['user_id'],
+                        'contact_name': request.form['contact_name'],
+                        'contact_email': request.form['contact_email'],
+                        'contact_phone': request.form['contact_phone'],
+                        'status': 'pending'
+                    }
+                    image_data_list.append(image_data)
+
+            db.images.insert_many(image_data_list)
+            flash('Properties submitted for approval!', 'success')
+            return redirect('/my-properties')
+        except Exception as e:
+            flash(f'Error uploading properties: {str(e)}', 'error')
+            return redirect('/insert')
 
 # Admin Routes
 @app.route('/admin/login', methods=['GET', 'POST'])
