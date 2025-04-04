@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 import os
 import hashlib
 import io
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 import logging
 from logging.handlers import RotatingFileHandler
 
@@ -22,11 +22,19 @@ app.secret_key = os.getenv('SECRET_KEY', os.urandom(24))
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB upload limit
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+app.config['IMAGE_QUALITY'] = 85
+app.config['MAX_IMAGE_DIMENSION'] = (1200, 1200)
 
 # Configure logging
-handler = RotatingFileHandler('app.log', maxBytes=10000, backupCount=3)
-handler.setLevel(logging.INFO)
-app.logger.addHandler(handler)
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)s: %(message)s',
+    handlers=[
+        RotatingFileHandler('app.log', maxBytes=10000, backupCount=3),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
 
 # MongoDB setup with enhanced error handling
 try:
@@ -41,9 +49,9 @@ try:
     client.admin.command('ping')
     db = client.get_database()
     fs = GridFS(db)
-    app.logger.info("Successfully connected to MongoDB")
+    logger.info("Successfully connected to MongoDB")
 except Exception as e:
-    app.logger.error(f"Could not connect to MongoDB: {str(e)}")
+    logger.error(f"Could not connect to MongoDB: {str(e)}")
     raise
 
 # Flask-Mail configuration with fallback
@@ -57,10 +65,6 @@ mail_settings = {
 }
 app.config.update(mail_settings)
 mail = Mail(app)
-
-# Admin credentials - consider using a proper admin collection in DB
-ADMIN_EMAIL = os.getenv('ADMIN_EMAIL', 'admin@example.com')
-ADMIN_PASSWORD_HASH = hashlib.sha256(os.getenv('ADMIN_PASSWORD', 'admin123').encode()).hexdigest()
 
 # Helper functions
 def hash_password(password):
@@ -76,23 +80,43 @@ def verify_password(stored_password, provided_password):
     return hashed == hashlib.sha256((provided_password + salt).encode()).hexdigest()
 
 def allowed_file(filename):
+    """Check if file has allowed extension"""
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
-def resize_image(file_stream, max_size=(1200, 1200), quality=85):
-    """Resize image while maintaining aspect ratio"""
+def validate_image(file_stream):
+    """Validate and process image file"""
     try:
+        # Ensure we're at the start of the file
+        if hasattr(file_stream, 'seek'):
+            file_stream.seek(0)
+        
+        # Verify it's a valid image
         img = Image.open(file_stream)
+        img.verify()  # Verify without loading
+        file_stream.seek(0)
+        
+        # Convert to RGB if needed
         if img.mode != 'RGB':
             img = img.convert('RGB')
-        img.thumbnail(max_size, Image.Resampling.LANCZOS)
+        
+        # Resize while maintaining aspect ratio
+        img.thumbnail(app.config['MAX_IMAGE_DIMENSION'], Image.Resampling.LANCZOS)
+        
+        # Save to bytes buffer
         img_io = io.BytesIO()
-        img.save(img_io, 'JPEG', quality=quality, optimize=True)
+        img.save(
+            img_io, 
+            'JPEG', 
+            quality=app.config['IMAGE_QUALITY'], 
+            optimize=True
+        )
         img_io.seek(0)
         return img_io
+    except UnidentifiedImageError:
+        raise ValueError("Invalid image file - cannot identify")
     except Exception as e:
-        app.logger.error(f"Error resizing image: {str(e)}")
-        raise
+        raise ValueError(f"Error processing image: {str(e)}")
 
 def get_user_images(user_id=None, search_query=None, location_query=None, approved_only=True):
     """Query images with optional filters"""
@@ -112,11 +136,11 @@ def get_user_images(user_id=None, search_query=None, location_query=None, approv
     try:
         images = list(db.images.find(query).sort('upload_date', -1))
         for img in images:
-            img['id'] = str(img['_id'])  # Convert ObjectId to string for templates
+            img['id'] = str(img['_id'])
             img['formatted_date'] = img['upload_date'].strftime('%Y-%m-%d')
         return images
     except Exception as e:
-        app.logger.error(f"Error fetching images: {str(e)}")
+        logger.error(f"Error fetching images: {str(e)}")
         return []
 
 def get_current_user():
@@ -164,65 +188,22 @@ def index():
         location_query = request.args.get('location', '').strip()
         images = get_user_images(search_query=search_query, location_query=location_query)
         return render_template('index.html', 
-                             images=images, 
-                             current_user=get_current_user(),
-                             search_query=search_query,
-                             location_query=location_query)
+                            images=images, 
+                            current_user=get_current_user(),
+                            search_query=search_query,
+                            location_query=location_query)
     except Exception as e:
-        app.logger.error(f"Error in index route: {str(e)}")
+        logger.error(f"Error in index route: {str(e)}")
         flash('An error occurred while loading properties', 'error')
         return render_template('index.html', images=[], current_user=get_current_user())
-
-@app.route('/my-images')
-@login_required
-def my_images():
-    try:
-        images = get_user_images(session['user_id'], approved_only=False)
-        return render_template('my_images.html', 
-                             images=images, 
-                             current_user=get_current_user())
-    except Exception as e:
-        app.logger.error(f"Error in my_images route: {str(e)}")
-        flash('An error occurred while loading your images', 'error')
-        return redirect(url_for('index'))
-
-@app.route('/my-properties')
-@login_required
-def my_properties():
-    try:
-        images = get_user_images(session['user_id'], approved_only=False)
-        return render_template('property.html', 
-                             images=images, 
-                             current_user=get_current_user())
-    except Exception as e:
-        app.logger.error(f"Error in my_properties route: {str(e)}")
-        flash('An error occurred while loading your properties', 'error')
-        return redirect(url_for('index'))
-
-@app.route('/image/<image_id>')
-def image_detail(image_id):
-    try:
-        image = db.images.find_one({'_id': ObjectId(image_id), 'status': 'approved'})
-        if not image:
-            flash('Image not found or not approved', 'error')
-            return redirect(url_for('index'))
-        
-        image['formatted_date'] = image['upload_date'].strftime("%Y-%m-%d")
-        return render_template('image_details.html', 
-                            image=image, 
-                            current_user=get_current_user())
-    except Exception as e:
-        app.logger.error(f"Error in image_detail route: {str(e)}")
-        flash('Invalid image ID', 'error')
-        return redirect(url_for('index'))
 
 @app.route('/insert', methods=['GET', 'POST'])
 @login_required
 def insert():
     if request.method == 'GET':
         return render_template('insert.html', 
-                             image=None, 
-                             current_user=get_current_user())
+                            image=None, 
+                            current_user=get_current_user())
     
     try:
         files = request.files.getlist('image')
@@ -239,9 +220,14 @@ def insert():
                 
                 filename = secure_filename(file.filename)
                 try:
-                    img_io = resize_image(file.stream)
+                    # Validate and process image
+                    file.stream.seek(0)
+                    img_io = validate_image(file.stream)
+                    
+                    # Store in GridFS
                     file_id = fs.put(img_io, filename=filename)
                     
+                    # Prepare image data
                     image_data = {
                         'name': request.form.get('name', 'Untitled'),
                         'description': request.form.get('description', ''),
@@ -255,17 +241,22 @@ def insert():
                         'status': 'pending'
                     }
                     image_data_list.append(image_data)
+                    
+                except ValueError as e:
+                    flash(f'Invalid image file: {filename} - {str(e)}', 'error')
+                    logger.error(f"Invalid image {filename}: {str(e)}")
                 except Exception as e:
-                    app.logger.error(f"Error processing file {filename}: {str(e)}")
                     flash(f'Error processing {filename}', 'error')
-        
+                    logger.error(f"Error processing {filename}: {str(e)}")
+
         if image_data_list:
             db.images.insert_many(image_data_list)
             flash(f'{len(image_data_list)} properties submitted for approval!', 'success')
+        
         return redirect(url_for('my_properties'))
     
     except Exception as e:
-        app.logger.error(f"Error in insert route: {str(e)}")
+        logger.error(f"Insert route error: {str(e)}")
         flash('Error uploading properties', 'error')
         return redirect(url_for('insert'))
 
@@ -278,10 +269,10 @@ def serve_image(file_id):
         grid_out = fs.get(ObjectId(file_id))
         response = make_response(grid_out.read())
         response.headers.set('Content-Type', 'image/jpeg')
-        response.headers.set('Cache-Control', 'public, max-age=31536000')  # 1 year cache
+        response.headers.set('Cache-Control', 'public, max-age=31536000')
         return response
     except Exception as e:
-        app.logger.error(f"Error serving image {file_id}: {str(e)}")
+        logger.error(f"Error serving image {file_id}: {str(e)}")
         return send_file('static/images/placeholder.jpg', mimetype='image/jpeg')
 
 @app.route('/edit-image/<image_id>', methods=['GET', 'POST'])
@@ -295,8 +286,8 @@ def edit_image(image_id):
         
         if request.method == 'GET':
             return render_template('insert.html', 
-                                 image=image, 
-                                 current_user=get_current_user())
+                                image=image, 
+                                current_user=get_current_user())
         
         # Handle POST request
         update_data = {
@@ -314,22 +305,29 @@ def edit_image(image_id):
             file = request.files['image']
             if allowed_file(file.filename):
                 try:
-                    img_io = resize_image(file.stream)
+                    file.stream.seek(0)
+                    img_io = validate_image(file.stream)
+                    
                     # Delete old file from GridFS
                     fs.delete(ObjectId(image['file_id']))
+                    
                     # Store new file
                     file_id = fs.put(img_io, filename=secure_filename(file.filename))
                     update_data['file_id'] = str(file_id)
+                    
+                except ValueError as e:
+                    flash(f'Invalid image file: {str(e)}', 'error')
+                    logger.error(f"Invalid image update: {str(e)}")
                 except Exception as e:
-                    app.logger.error(f"Error updating image: {str(e)}")
                     flash('Error updating image', 'error')
+                    logger.error(f"Error updating image: {str(e)}")
         
         db.images.update_one({'_id': ObjectId(image_id)}, {'$set': update_data})
         flash('Property updated and submitted for re-approval!', 'success')
         return redirect(url_for('my_properties'))
     
     except Exception as e:
-        app.logger.error(f"Error in edit_image route: {str(e)}")
+        logger.error(f"Error in edit_image route: {str(e)}")
         flash('Error editing property', 'error')
         return redirect(url_for('my_properties'))
 
