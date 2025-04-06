@@ -4,5 +4,5 @@ python-dotenv
 flask-mail
 werkzeug
 gunicorn
-gridfs
+# gridfs
 boto3
