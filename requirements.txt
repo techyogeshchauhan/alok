@@ -1,4 +1,8 @@
 flask
 pymongo
 python-dotenv
+flask-mail
 werkzeug
+gunicorn
+gridfs
+boto3
