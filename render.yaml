@@ -1,0 +1,63 @@
+# render.yaml
+databases:
+  - name: image_catalog_mongodb
+    databaseName: image_catalog
+    user: yogesh
+    # Password will be automatically generated and secured
+    plan: free  # or "starter" for production
+
+services:
+  - type: web
+    name: image-catalog-app
+    runtime: python
+    pythonVersion: "3.9.7"
+    buildCommand: |
+      pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      # Application Settings
+      - key: SECRET_KEY
+        generateValue: true
+      - key: FLASK_ENV
+        value: production
+      - key: DEBUG
+        value: false
+
+      # MongoDB Configuration
+      - key: MONGO_URI
+        sync: false  # We'll set this manually after DB creation
+        # Will be in format: mongodb+srv://<user>:<password>@<host>/image_catalog?retryWrites=true&w=majority
+
+      # Email Configuration
+      - key: MAIL_SERVER
+        value: smtp.gmail.com
+      - key: MAIL_PORT
+        value: 587
+      - key: MAIL_USE_TLS
+        value: true
+      - key: MAIL_USERNAME
+        value: alokkumarguptadsvv@gmail.com
+      - key: MAIL_PASSWORD
+        value: ykap qipw mqgt izcn
+
+      # Admin Configuration
+      - key: ADMIN_EMAIL
+        value: admin@example.com
+      - key: ADMIN_PASSWORD
+        value: strong_hashed_password_here  # IMPORTANT: Replace with hashed password
+
+      # Contact Configuration
+      - key: CONTACT_EMAIL
+        value: yogesh.chauhan.ai@gmail.com
+
+      # File Uploads
+      - key: UPLOAD_FOLDER
+        value: static/uploads
+      - key: MAX_CONTENT_LENGTH
+        value: 16777216
+
+    # Required for file uploads (if not using GridFS)
+    disk:
+      name: uploads_volume
+      mountPath: /opt/render/project/src/static/uploads
+      sizeGB: 1  # Adjust based on needs
