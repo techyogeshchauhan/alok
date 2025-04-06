@@ -6,3 +6,4 @@ werkzeug
 gunicorn
 # gridfs
 boto3
+pymongo
