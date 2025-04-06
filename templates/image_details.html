@@ -254,7 +254,8 @@
             {% endif %}
         {% endwith %}
         <div class="property-details">
-            <img src="{{ url_for('static', filename='uploads/' + image.filename) }}" alt="{{ image.name }}" class="property-image">
+            <img src="{{ url_for('get_image', file_id=image.file_id) }}" alt="{{ image.name }}">
+            <!-- <img src="{{ url_for('static', filename='uploads/' + image.filename) }}" alt="{{ image.name }}" class="property-image"> -->
             <div class="property-info">
                 <h1 class="property-title">{{ image.name }}</h1>
                 <p class="property-description">{{ image.description }}</p>

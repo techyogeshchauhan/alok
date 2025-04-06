@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from werkzeug.utils import secure_filename
 from pymongo import MongoClient
+from werkzeug.utils import secure_filename
+import gridfs
 from bson.objectid import ObjectId
 from datetime import datetime
 from flask_mail import Mail, Message
@@ -18,9 +20,14 @@ app.secret_key = os.getenv('SECRET_KEY', 'your_secure_secret_key_here')
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # Limit file uploads to 16MB
 
-# MongoDB setup
-client = MongoClient(os.getenv('MONGO_URI', 'mongodb://localhost:27017/'))
-db = client.image_catalog
+# # MongoDB setup
+# client = MongoClient(os.getenv('MONGO_URI', 'mongodb://localhost:27017/'))
+# db = client.image_catalog
+
+client = MongoClient("mongodb+srv://yogesh:yPF9TEvpCA0jfCz1@cluster0.bmbdbik.mongodb.net/image_catalog?retryWrites=true&w=majority&appName=Cluster0")
+db = client['image_catalog']
+fs = gridfs.GridFS(db)
+
 
 # Flask-Mail configuration
 app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER', 'smtp.gmail.com')
@@ -119,20 +126,22 @@ def insert():
             for file in files:
                 if file and file.filename:
                     filename = secure_filename(file.filename)
-                    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                    file.save(file_path)
-
+                    
+                    # Store in GridFS
+                    file_id = fs.put(file, filename=filename)
+                    
                     image_data = {
                         'name': request.form['name'],
                         'description': request.form['description'],
                         'location': request.form['location'],
                         'filename': filename,
+                        'file_id': file_id,  # Store GridFS file ID
                         'upload_date': datetime.utcnow(),
                         'user_id': session['user_id'],
                         'contact_name': request.form['contact_name'],
                         'contact_email': request.form['contact_email'],
                         'contact_phone': request.form['contact_phone'],
-                        'status': 'pending'  # New property starts as pending
+                        'status': 'pending'
                     }
                     image_data_list.append(image_data)
 
@@ -143,9 +152,23 @@ def insert():
             flash(f'Error uploading properties: {str(e)}', 'error')
             return redirect('/insert')
     
-    # For GET requests, pass image=None since we're creating a new property
     return render_template('insert.html', image=None, current_user=get_current_user())
 
+from flask import send_file
+import io
+
+@app.route('/get_image/<file_id>')
+def get_image(file_id):
+    try:
+        file = fs.get(ObjectId(file_id))
+        return send_file(
+            io.BytesIO(file.read()),
+            mimetype='image/jpeg',
+            download_name=file.filename
+        )
+    except Exception as e:
+        flash('Image not found', 'error')
+        return redirect(url_for('index'))
 # Admin Routes
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
@@ -212,9 +235,11 @@ def reject_property(image_id):
     try:
         image = db.images.find_one({'_id': ObjectId(image_id)})
         if image:
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], image['filename'])
-            if os.path.exists(file_path):
-                os.remove(file_path)
+            # Delete from GridFS if file_id exists
+            if 'file_id' in image:
+                fs.delete(ObjectId(image['file_id']))
+            
+            # Delete from images collection
             db.images.delete_one({'_id': ObjectId(image_id)})
             flash('Property rejected and deleted!', 'success')
     except Exception as e:
@@ -249,22 +274,30 @@ def edit_image(image_id):
                 'contact_name': request.form['contact_name'],
                 'contact_email': request.form['contact_email'],
                 'contact_phone': request.form['contact_phone'],
-                'status': 'pending'  # Edited properties need re-approval
+                'status': 'pending'
             }
 
             if 'image' in request.files and request.files['image'].filename:
                 file = request.files['image']
-                old_file = os.path.join(app.config['UPLOAD_FOLDER'], image['filename'])
-                if os.path.exists(old_file):
-                    os.remove(old_file)
                 filename = secure_filename(file.filename)
-                file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                file.save(file_path)
+                
+                # Delete old file from GridFS
+                if 'file_id' in image:
+                    fs.delete(ObjectId(image['file_id']))
+                
+                # Store new file in GridFS
+                file_id = fs.put(file, filename=filename)
                 update_data['filename'] = filename
+                update_data['file_id'] = file_id
 
             db.images.update_one({'_id': ObjectId(image_id)}, {'$set': update_data})
             flash('Property updated and submitted for re-approval!', 'success')
             return redirect('/my-properties')
+
+        return render_template('insert.html', image=image, current_user=get_current_user())
+    except Exception as e:
+        flash(f'Error editing property: {str(e)}', 'error')
+        return redirect('/my-properties')
 
         return render_template('insert.html', image=image, current_user=get_current_user())
     except Exception as e:
@@ -280,9 +313,11 @@ def delete_image(image_id):
     try:
         image = db.images.find_one({'_id': ObjectId(image_id), 'user_id': session['user_id']})
         if image:
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], image['filename'])
-            if os.path.exists(file_path):
-                os.remove(file_path)
+            # Delete from GridFS if file_id exists
+            if 'file_id' in image:
+                fs.delete(ObjectId(image['file_id']))
+            
+            # Delete from images collection
             db.images.delete_one({'_id': ObjectId(image_id)})
             flash('Property deleted successfully!', 'success')
         else:

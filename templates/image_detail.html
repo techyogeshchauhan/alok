@@ -193,7 +193,8 @@
                 <div class="image-slider">
                     <div class="slider">
                         <div class="slide">
-                            <img src="{{ url_for('static', filename='uploads/' + image.filename) }}" alt="{{ image.name }}">
+                            <img src="{{ url_for('get_image', file_id=image.file_id) }}" alt="{{ image.name }}">
+                            <!-- <img src="{{ url_for('static', filename='uploads/' + image.filename) }}" alt="{{ image.name }}"> -->
                         </div>
                     </div>
                 </div>

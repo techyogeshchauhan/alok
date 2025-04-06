@@ -532,7 +532,8 @@
         <div class="gallery">
             {% for image in images %}
                 <div class="gallery-item">
-                    <img src="{{ url_for('static', filename='uploads/' + image.filename) }}" alt="{{ image.name }}">
+                    <img src="{{ url_for('get_image', file_id=image.file_id) }}" alt="{{ image.name }}">
+                    <!-- <img src="{{ url_for('static', filename='uploads/' + image.filename) }}" alt="{{ image.name }}"> -->
                     <span class="status-badge">Approved</span>
                     <div class="gallery-item-info">
                         <h3 class="gallery-item-title">{{ image.name }}</h3>
