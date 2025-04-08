@@ -440,7 +440,8 @@
                     <div class="property-item">
                         <div class="property-image">
                             
-                            <img src="{{ url_for('static', filename='uploads/' + property.filename) }}" alt="{{ property.name }}">
+                            
+                            <img src="{{ url_for('get_image', file_id=property.file_id) }}" alt="{{ property.name }}">
                         </div>
                         <div class="property-content">
                             <h3 class="property-title">{{ property.name }}</h3>

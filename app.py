@@ -187,6 +187,29 @@ def admin_login():
             return render_template('admin_login.html')  # Stay on login page if credentials are wrong
     return render_template('admin_login.html')
 
+# @app.route('/admin')
+# def admin_panel():
+#     if not is_admin():
+#         flash('Admin access required', 'error')
+#         return redirect('/admin/login')
+    
+#     # Get pending properties
+#     pending_properties = list(db.images.find({'status': 'pending'}).sort('upload_date', -1))
+#     for prop in pending_properties:
+#         prop['formatted_date'] = prop['upload_date'].strftime('%Y-%m-%d')
+    
+#     # Calculate statistics
+#     stats = {
+#         'approved_count': db.images.count_documents({'status': 'approved'}),
+#         'pending_count': db.images.count_documents({'status': 'pending'}),
+#         'rejected_count': db.images.count_documents({'status': 'rejected'}),
+#         'user_count': db.users.count_documents({})
+#     }
+    
+#     return render_template('admin_panel.html', 
+#                          properties=pending_properties,
+#                          stats=stats)
+
 @app.route('/admin')
 def admin_panel():
     if not is_admin():
@@ -207,7 +230,7 @@ def admin_panel():
     }
     
     return render_template('admin_panel.html', 
-                         properties=pending_properties,
+                         properties=pending_properties,  # This is the list of properties
                          stats=stats)
 
 @app.route('/admin/approve/<image_id>')
