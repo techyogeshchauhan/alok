@@ -439,8 +439,8 @@
                 {% for property in properties %}
                     <div class="property-item">
                         <div class="property-image">
-                            <img src="{{ url_for('get_image', file_id=image.file_id) }}" alt="{{ image.name }}">
-                            <!-- <img src="{{ url_for('static', filename='uploads/' + property.filename) }}" alt="{{ property.name }}"> -->
+                            <!-- <img src="{{ url_for('get_image', file_id=image.file_id) }}" alt="{{ image.name }}"> -->
+                            <img src="{{ url_for('static', filename='uploads/' + property.filename) }}" alt="{{ property.name }}">
                         </div>
                         <div class="property-content">
                             <h3 class="property-title">{{ property.name }}</h3>
